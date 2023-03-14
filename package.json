@@ -4,17 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js",
     "test": "jest --runInBand --detectOpenHandles --forceExit",
-    "format:check": "prettier --check .",
-    "format:write": "prettier --write .",
-    "lint:check": "eslint .",
+    "format:check": "prettier --check",
+    "format:write": "prettier --write",
+    "lint:check": "eslint",
     "lint:fix": "eslint src --fix --cache"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.35.0",
