@@ -3,15 +3,18 @@ const FeatureTest = require('../models/featured-test.model');
 
 const getAllFeatureTests = async (req, res, next) => {
   try {
-    const featuredtest = await FeatureTest.find().populate(
-      [
-        'creator',
-        'comments',
-        'leaderboard.first',
-        'leaderboard.second',
-        'leaderboard.third',
-      ]
-    );
+    const featuredtest = await FeatureTest.find().populate([
+      'creator',
+      'comments',
+      {
+        path: 'leaderboard',
+        populate: {
+          path: 'first',
+        },
+      },
+      'leaderboard.second',
+      'leaderboard.third',
+    ]);
     return res.status(200).json(featuredtest);
   } catch (error) {
     return next(error);
