@@ -3,16 +3,16 @@ const User = require('../models/user.model');
 
 const getAllUsers = async (req, res, next) => {
   try {
-    const user = await User.find().populate([
-      'favourite_test',
-      'created_test',
+    const users = await User.find().populate([
+      'favourite_tests',
+      'created_tests',
       'records',
       'achievements',
       'followed_users',
       'following_users',
       'achievements'
     ]);
-    return res.status(200).json(user);
+    return res.status(200).json(users);
   } catch (error) {
     return next(error);
   }

@@ -8,7 +8,7 @@ const {
   putImage,
   updateCountry,
   deleteCountry,
-} = require('../controllers/country.controllers');
+} = require('../controllers/countries.controllers');
 
 CountriesRoutes.get('/', getAllCountries);
 CountriesRoutes.post('/', upload.single('flag'), createCountry);

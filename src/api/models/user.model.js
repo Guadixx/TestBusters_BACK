@@ -17,24 +17,24 @@ const UserSchema = mongoose.Schema(
       trim: true,
       validate: [validator.isStrongPassword, 'Password not valid'],
     },
-    favourite_test: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'FeatureTest' } |
+    favourite_tests: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest' } |
         { type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest' },
     ],
-    created_test: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'FeatureTest' } |
+    created_tests: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest' } |
         { type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest' },
     ],
     records: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Record' }],
     followed_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     following_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    avatar: { type: String, required: true, trim: true },
+    avatar: { type: String},
     bio: { type: String, trim: true },
-    banner: { type: String, trim: true },
+    banner: { type: String},
     level: [{ type: Number, required: true }],
-    next_level: { type: Number, required: true, trim: true },
-    tests_played: { type: Number, trim: true },
-    achievements: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Achivement' }],
+    next_level: { type: Number, required: true},
+    tests_played: { type: Number},
+    achievements: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' }],
   },
   {
     timestamps: {

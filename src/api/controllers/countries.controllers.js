@@ -9,7 +9,6 @@ const getAllCountries = async (req, res, next) => {
     return next(error);
   }
 };
-
 const createCountry = async (req, res, next) => {
   try {
     const newCountry = new Country({
@@ -38,7 +37,6 @@ const putImage = async (req, res, next) => {
     return next(error);
   }
 };
-
 const updateCountry = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -62,6 +60,7 @@ const deleteCountry = async (req, res, next) => {
     return next(error);
   }
 };
+
 module.exports = {
   getAllCountries,
   createCountry,

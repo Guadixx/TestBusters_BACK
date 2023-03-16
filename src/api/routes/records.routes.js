@@ -4,7 +4,7 @@ const RecordsRoutes = express.Router();
 const {
     getAllRecords,
     createRecord,
-} = require('../controllers/record.controller');
+} = require('../controllers/records.controllers');
 
 RecordsRoutes.get("/", getAllRecords);
 RecordsRoutes.post("/", createRecord);
