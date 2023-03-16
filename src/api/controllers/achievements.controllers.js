@@ -1,4 +1,4 @@
-const Achievement = require('../models/achievements.model');
+const Achievement = require('../models/achievement.model');
 //const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllAchievements = async (req, res, next) => {
@@ -9,7 +9,6 @@ const getAllAchievements = async (req, res, next) => {
     return next(error);
   }
 };
-
 const createAchievement = async (req, res, next) => {
   try {
     const newAchievement = new Achievement({

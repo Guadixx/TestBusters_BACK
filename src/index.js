@@ -3,15 +3,15 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connect = require('./utils/connect');
 const { configCloudinary } = require('./middlewares/files.middleware');
-const CountriesRoutes = require('./api/routes/country.routes');
-const AchievementsRoutes = require('./api/routes/achievement.routes');
-const CommentsRoutes = require('./api/routes/comment.routes');
+const CountriesRoutes = require('./api/routes/countries.routes');
+const AchievementsRoutes = require('./api/routes/achievements.routes');
+const CommentsRoutes = require('./api/routes/comments.routes');
 const DataRoutes = require('./api/routes/data.routes');
-const FeaturedTestRoutes = require('./api/routes/featured-test.routes');
-const GenericTestRoutes = require('./api/routes/generic-test.routes');
-const LeaderboardRoutes = require('./api/routes/leaderboard.routes');
+const FeaturedTestsRoutes = require('./api/routes/featuredTests.routes');
+const GenericTestsRoutes = require('./api/routes/genericTests.routes');
+const LeaderboardsRoutes = require('./api/routes/leaderboards.routes');
 const RecordsRoutes = require('./api/routes/records.routes');
-const UserRoutes = require('./api/routes/user.routes');
+const UsersRoutes = require('./api/routes/users.routes');
 
 
 dotenv.config();
@@ -32,11 +32,11 @@ server.use('/api/v1/countries', CountriesRoutes);
 server.use('/api/v1/achievements', AchievementsRoutes);
 server.use('/api/v1/comments', CommentsRoutes);
 server.use('/api/v1/data', DataRoutes);
-server.use('/api/v1/featuredtest', FeaturedTestRoutes);
-server.use('/api/v1/generictest', GenericTestRoutes);
-server.use('/api/v1/leaderboard', LeaderboardRoutes);
+server.use('/api/v1/featuredtests', FeaturedTestsRoutes);
+server.use('/api/v1/generictests', GenericTestsRoutes);
+server.use('/api/v1/leaderboards', LeaderboardsRoutes);
 server.use('/api/v1/records', RecordsRoutes);
-server.use('/api/v1/users', UserRoutes);
+server.use('/api/v1/users', UsersRoutes);
 server.use('*', (req, res, next) => {
   const error = new Error('Route not found');
   error.status = 404;

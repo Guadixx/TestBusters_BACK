@@ -9,7 +9,6 @@ const getAllComments = async (req, res, next) => {
     return next(error);
   }
 };
-
 const createComment = async (req, res, next) => {
   try {
     const newComment = new Comment(req.body);

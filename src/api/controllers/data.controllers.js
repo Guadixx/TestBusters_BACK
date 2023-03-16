@@ -9,7 +9,6 @@ const getAllData = async (req, res, next) => {
     return next(error);
   }
 };
-
 const createData = async (req, res, next) => {
   try {
     const newData = new Data({
