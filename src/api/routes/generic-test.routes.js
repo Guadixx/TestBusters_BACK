@@ -5,9 +5,11 @@ const GenericTestRoutes = express.Router();
 const {
   getAllGenericTests,
   createGenericTest,
+  getGenericTestsById,
 } = require('../controllers/generictest.controller');
 
 GenericTestRoutes.get('/', getAllGenericTests);
+GenericTestRoutes.get('/:id', getGenericTestsById);
 GenericTestRoutes.post(
   '/',
   upload.fields([

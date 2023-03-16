@@ -5,9 +5,11 @@ const FeaturedTestRoutes = express.Router();
 const {
   getAllFeatureTests,
   createFeatureTest,
+  getFeatureTestsById
 } = require('../controllers/featuredtest.controllers');
 
 FeaturedTestRoutes.get('/', getAllFeatureTests);
+FeaturedTestRoutes.get('/:id', getFeatureTestsById);
 FeaturedTestRoutes.post(
   '/',
   upload.fields([

@@ -18,11 +18,9 @@ const GenericTestSchema = mongoose.Schema(
     times_played: { type: Number, required: true },
     times_favorite: [{ type: String }],
     rating: [{ type: Number, required: true }],
-    leaderboard: {
-      first: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
-      second: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
-      third: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
-    },
+    first: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
+    second: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
+    third: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
   },
   {
     timestamps: {

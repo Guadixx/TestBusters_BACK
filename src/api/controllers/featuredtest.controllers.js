@@ -1,19 +1,42 @@
 const FeatureTest = require('../models/featured-test.model');
 //const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
+const getFeatureTestsById = async (req, res, next) => {
+  try {
+    const {id} = req.params
+    const featuretest = await FeatureTest.findById(id).populate([
+      'creator',
+      {
+        path: 'first',
+        populate: { path: 'user' },
+      },
+      {
+        path: 'second',
+        populate: { path: 'user' },
+      },
+      {
+        path: 'third',
+        populate: { path: 'user' },
+      },
+      {
+        path: 'comments',
+        populate: { path: 'user' },
+      }
+    ]);
+    return res.status(200).json(featuretest);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 const getAllFeatureTests = async (req, res, next) => {
   try {
     const featuredtest = await FeatureTest.find().populate([
       'creator',
       'comments',
-      {
-        path: 'leaderboard',
-        populate: {
-          path: 'first',
-        },
-      },
-      'leaderboard.second',
-      'leaderboard.third',
+      'first',
+      'second',
+      'third',
     ]);
     return res.status(200).json(featuredtest);
   } catch (error) {
@@ -38,4 +61,5 @@ const createFeatureTest = async (req, res, next) => {
 module.exports = {
   getAllFeatureTests,
   createFeatureTest,
+  getFeatureTestsById
 };
