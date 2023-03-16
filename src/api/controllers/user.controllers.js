@@ -3,7 +3,15 @@ const User = require('../models/user.model');
 
 const getAllUsers = async (req, res, next) => {
   try {
-    const user = await User.find().populate( 'favourite_test created_test records achievements');
+    const user = await User.find().populate([
+      'favourite_test',
+      'created_test',
+      'records',
+      'achievements',
+      'followed_users',
+      'following_users',
+      'achievements'
+    ]);
     return res.status(200).json(user);
   } catch (error) {
     return next(error);
@@ -30,6 +38,6 @@ const registerUser = async (req, res, next) => {
 };
 
 module.exports = {
-    getAllUsers,
-    registerUser
-}
+  getAllUsers,
+  registerUser,
+};

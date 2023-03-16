@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const FeaturedTestSchema = mongoose.Schema(
   {
-    creator: { type: String, required: true },
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     thumbnail: { type: String, required: true },
@@ -20,7 +20,7 @@ const FeaturedTestSchema = mongoose.Schema(
     comments_enabled: { type: Boolean, required: true },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     times_played: { type: Number, required: true },
-    times_favorite: { type: Number, required: true },
+    times_favorite: [{ type: String }],
     rating: [{ type: Number, required: true }],
     leaderboard: {
       first: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },

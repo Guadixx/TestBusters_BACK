@@ -3,9 +3,14 @@ const GenericTest = require('../models/generic-test.model');
 
 const getAllGenericTests = async (req, res, next) => {
   try {
-    const generictest = await GenericTest.find().populate(
-      'data comments leaderboard.first leaderboard.second leaderboard.third'
-    );
+    const generictest = await GenericTest.find().populate([
+      'creator',
+      'data',
+      'comments',
+      'leaderboard.first',
+      'leaderboard.second',
+      'leaderboard.third',
+    ]);
     return res.status(200).json(generictest);
   } catch (error) {
     return next(error);

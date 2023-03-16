@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+//const bcrypt = require('bcrypt');
 const UserSchema = mongoose.Schema(
   {
     username: { type: String, required: true, trim: true, unique: true },
@@ -25,24 +25,14 @@ const UserSchema = mongoose.Schema(
         { type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest' },
     ],
     records: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Record' }],
-    followed_users: [
-      {
-        username: { type: String, trim: true },
-        user_id: { type: String, trim: true },
-      },
-    ],
-    following_users: [
-      {
-        username: { type: String, trim: true },
-        user_id: { type: String, trim: true },
-      },
-    ],
+    followed_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    following_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     avatar: { type: String, required: true, trim: true },
     bio: { type: String, trim: true },
     banner: { type: String, trim: true },
     level: [{ type: Number, required: true }],
     next_level: { type: Number, required: true, trim: true },
-    tests_played: [{ type: Number, trim: true }],
+    tests_played: { type: Number, trim: true },
     achievements: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Achivement' }],
   },
   {
@@ -56,5 +46,5 @@ const UserSchema = mongoose.Schema(
   this.password = bcrypt.hashSync(this.password, 10);
   next();
 }); */
-const User = mongoose.model('Test', UserSchema);
+const User = mongoose.model('User', UserSchema);
 module.exports = User;

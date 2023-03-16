@@ -3,7 +3,7 @@ const Comment = require('../models/comment.model');
 
 const getAllComments = async (req, res, next) => {
   try {
-    const comment = await Comment.find();
+    const comment = await Comment.find().populate('user');
     return res.status(200).json(comment);
   } catch (error) {
     return next(error);

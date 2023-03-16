@@ -3,7 +3,7 @@ const Leaderboard = require('../models/leaderboard.model');
 
 const getAllLeaderBoards = async (req, res, next) => {
   try {
-    const leaderboard = await Leaderboard.find();
+    const leaderboard = await Leaderboard.find().populate('user');
     return res.status(200).json(leaderboard);
   } catch (error) {
     return next(error);
@@ -12,7 +12,7 @@ const getAllLeaderBoards = async (req, res, next) => {
 
 const createLeaderBoard = async (req, res, next) => {
   try {
-    const newLeaderBoard = new Leaderboard(req.body,);
+    const newLeaderBoard = new Leaderboard(req.body);
     const createdLeaderBoard = await newLeaderBoard.save();
     return res.status(201).json(createdLeaderBoard);
   } catch (error) {
@@ -21,6 +21,6 @@ const createLeaderBoard = async (req, res, next) => {
 };
 
 module.exports = {
-    getAllLeaderBoards,
-   createLeaderBoard,
+  getAllLeaderBoards,
+  createLeaderBoard,
 };
