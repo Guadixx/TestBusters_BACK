@@ -3,11 +3,18 @@ const { upload } = require('../../middlewares/files.middleware');
 const GenericTestRoutes = express.Router();
 
 const {
-    getAllGenericTest,
-    createGenericTest,
+  getAllGenericTests,
+  createGenericTest,
 } = require('../controllers/generictest.controller');
 
-GenericTestRoutes.get("/", getAllGenericTest);
-GenericTestRoutes.post("/", upload.multiple("thumbnail"), createGenericTest);
+GenericTestRoutes.get('/', getAllGenericTests);
+GenericTestRoutes.post(
+  '/',
+  upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'banner', maxCount: 1 },
+  ]),
+  createGenericTest
+);
 
 module.exports = GenericTestRoutes;
