@@ -3,10 +3,10 @@ const RecordsRoutes = express.Router();
 
 const {
     getAllRecords,
-    createRecords,
+    createRecord,
 } = require('../controllers/record.controller');
 
 RecordsRoutes.get("/", getAllRecords);
-RecordsRoutes.post("/", createRecords);
+RecordsRoutes.post("/", createRecord);
 
 module.exports = RecordsRoutes;

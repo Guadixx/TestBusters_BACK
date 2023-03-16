@@ -3,11 +3,18 @@ const { upload } = require('../../middlewares/files.middleware');
 const FeaturedTestRoutes = express.Router();
 
 const {
-    getAllFeaturedTest,
-    createFeaturedTest,
-} = require('../controllers/achievement.controller');
+  getAllFeatureTests,
+  createFeatureTest,
+} = require('../controllers/featuredtest.controllers');
 
-FeaturedTestRoutes.get("/", getAllFeaturedTest);
-FeaturedTestRoutes.post("/", upload.multiple("thumbnail"), createFeaturedTest);
+FeaturedTestRoutes.get('/', getAllFeatureTests);
+FeaturedTestRoutes.post(
+  '/',
+  upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'banner', maxCount: 1 },
+  ]),
+  createFeatureTest
+);
 
 module.exports = FeaturedTestRoutes;
