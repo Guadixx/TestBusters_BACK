@@ -1,15 +1,28 @@
 const GenericTest = require('../models/generic-test.model');
 //const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
-const getAllGenericTests = async (req, res, next) => {
+const getGenericTestsById = async (req, res, next) => {
   try {
-    const generictest = await GenericTest.find().populate([
+    const {id} = req.params
+    const generictest = await GenericTest.findById(id).populate([
       'creator',
       'data',
-      'comments',
-      'leaderboard.first',
-      'leaderboard.second',
-      'leaderboard.third',
+      {
+        path: 'first',
+        populate: { path: 'user' },
+      },
+      {
+        path: 'second',
+        populate: { path: 'user' },
+      },
+      {
+        path: 'third',
+        populate: { path: 'user' },
+      },
+      {
+        path: 'comments',
+        populate: { path: 'user' },
+      }
     ]);
     return res.status(200).json(generictest);
   } catch (error) {
@@ -30,8 +43,24 @@ const createGenericTest = async (req, res, next) => {
     return next(error);
   }
 };
+const getAllGenericTests = async (req, res, next) => {
+  try {
+    const generictest = await GenericTest.find().populate([
+      'creator',
+      'data',
+      'first',
+      'second',
+      'third',
+      'comments',
+    ]);
+    return res.status(200).json(generictest);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getAllGenericTests,
   createGenericTest,
+  getGenericTestsById,
 };
