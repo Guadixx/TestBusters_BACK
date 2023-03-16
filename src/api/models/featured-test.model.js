@@ -23,22 +23,10 @@ const FeaturedTestSchema = mongoose.Schema(
     times_favorite: { type: Number, required: true },
     rating: [{ type: Number, required: true }],
     leaderboard: {
-      first: {
-        user_id: { type: String },
-        user: { type: String },
-        score: { type: String },
+        first: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
+        second: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
+        third: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
       },
-      second: {
-        user_id: { type: String },
-        user: { type: String },
-        score: { type: String },
-      },
-      third: {
-        user_id: { type: String },
-        user: { type: String },
-        score: { type: String },
-      }, //QUIZÁS HACER OTRO MODELO Y POPULARLO PARA MÁS LIMPIEZA. IGUAL CON EL CAMPO AVERAGE.
-    },
   },
   {
     timestamps: {

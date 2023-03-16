@@ -18,8 +18,18 @@ const UserSchema = mongoose.Schema(
     favourite_test: [{ type: String, required: true, trim: true }], //PREGUNTAR SI CONVIENE POPULAR A RIESGO DE QUE EL OBJETO QUEDE INMENSO O DIRECTAMENTE HACER OTRO MODELO TEST MAS CORTO QUE TENGA LA INFO Q NECESITAMOS AQUÍ
     created_test: [{ type: String, trim: true }], //LO MISMO Q ARRIBA
     records: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Record' }],
-    followed_users: [{ type: String, trim: true }], //QUIZÁS MODELO USER ÚNICAMENTE CON EL NOMBRE DE USUARIO Y EL ID PARA CREAR EL LINK Y AHORRARNOS LLAMADAS
-    following_users: [{ type: String, trim: true }], //LO MISMO Q ARRIBA
+    followed_users: [
+      {
+        username: { type: String, trim: true },
+        user_id: { type: String, trim: true },
+      },
+    ],
+    following_users: [
+      {
+        username: { type: String, trim: true },
+        user_id: { type: String, trim: true },
+      },
+    ],
     avatar: { type: String, required: true, trim: true },
     bio: { type: String, trim: true },
     banner: { type: String, trim: true },
