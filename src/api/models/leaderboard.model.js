@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const LeaderboardSchema = mongoose.Schema(
   {
-    user_id: { type: String },
-    user: { type: String },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     score: { type: String },
   },
   {

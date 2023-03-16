@@ -2,13 +2,11 @@ const mongoose = require('mongoose');
 
 const CommentSchema = mongoose.Schema(
   {
-    user: { type: String, required: true, trim: true },
-    userId: { type: String, required: true, trim: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     id: { type: Number, required: true, trim: true },
     comment: { type: String, required: true, trim: true },
     date: { type: String, required: true, trim: true },
-    likes: { type: Number, required: true, trim: true },
-    dislikes: { type: Number, required: true, trim: true },
+    likes: [{ type: String, required: true, trim: true }],
   },
   {
     timestamps: {
