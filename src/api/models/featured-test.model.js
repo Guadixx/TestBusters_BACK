@@ -19,9 +19,9 @@ const FeaturedTestSchema = mongoose.Schema(
     random: { type: Boolean, required: true },
     comments_enabled: { type: Boolean, required: true },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-    times_played: { type: Number, required: true },
+    times_played: { type: Number, default: 0},
     times_favorite: [{ type: String }],
-    rating: [{ type: Number, required: true }],
+    rating: [{ type: Number}],
     leaderboard: {
       first: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
       second: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
