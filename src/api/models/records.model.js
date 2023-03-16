@@ -14,5 +14,5 @@ const RecordSchema = mongoose.Schema(
     },
   }
 );
-const Record = mongoose.model('Record', TestSchema);
+const Record = mongoose.model('Record', RecordSchema);
 module.exports = Record;
