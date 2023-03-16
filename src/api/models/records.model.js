@@ -1,16 +1,18 @@
 const mongoose = require('mongoose');
 
 const RecordSchema = mongoose.Schema(
-    {
-        score: { type: String, required: true, trim: true },
-        rating: { type: Number, required: true, trim: true }
+  {
+    userId: { type: String },
+    testId: { type: String },
+    score: { type: String, required: true, trim: true }, //FORMATO PUNTOS/PUNTOS POSIBLES/TIEMPO
+    rating: { type: Number, required: true, trim: true }, //SI NO ESTÁ PUNTUADO ES -1
+  },
+  {
+    timestamps: {
+      createdAt: 'created',
+      updatedAt: 'updated',
     },
-    {
-        timestamps: {
-            createdAt: 'created',
-            updatedAt: 'updated',
-        },
-    }
+  }
 );
 const Record = mongoose.model('Record', TestSchema);
 module.exports = Record;
