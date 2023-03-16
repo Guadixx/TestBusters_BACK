@@ -15,7 +15,7 @@ const FeaturedTestSchema = mongoose.Schema(
     answer: { type: String, required: true },
     question_text: [{ type: String, trim: true }],
     time: { type: String, required: true },
-    average: [{ type: Number }], //PUSHEAMOS TODOS LAS PUNTUACIONES EN TANTO POR CIENTO. EN CASO DE QUE EL USUARIO SUPERE SU MARCA BUSCAMOS LA ANTERIOR Y LA CAMBIAMOS POR LA NUEVA.
+    average: [{ type: Number }], //PUSHEAMOS TODOS LAS PUNTUACIONES EN TANTO POR CIENTO REDONDEADAS AL PRIMER DECIMAL. EN CASO DE QUE EL USUARIO SUPERE SU MARCA BUSCAMOS LA ANTERIOR Y LA CAMBIAMOS POR LA NUEVA.
     random: { type: Boolean, required: true },
     comments_enabled: { type: Boolean, required: true },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
@@ -23,10 +23,10 @@ const FeaturedTestSchema = mongoose.Schema(
     times_favorite: { type: Number, required: true },
     rating: [{ type: Number, required: true }],
     leaderboard: {
-        first: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
-        second: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
-        third: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
-      },
+      first: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
+      second: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
+      third: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
+    },
   },
   {
     timestamps: {

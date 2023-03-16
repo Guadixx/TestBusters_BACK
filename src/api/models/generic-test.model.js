@@ -9,15 +9,7 @@ const GenericTestSchema = mongoose.Schema(
     banner: { type: String, required: true },
     type: { type: String, required: true },
     thematic: { type: String, required: true, trim: true },
-    data: [
-      {
-        id: { type: Number, required: true },
-        question: { type: String, required: true, trim: true },
-        question_img: { type: String },
-        answer: { type: String, required: true, trim: true },
-        options: [{ type: String, required: true, trim: true }],
-      },
-    ],
+    data: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Data' }],
     time: { type: String, required: true },
     average: [{ type: Number }],
     random: { type: Boolean, required: true },
