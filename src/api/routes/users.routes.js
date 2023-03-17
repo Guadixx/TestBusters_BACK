@@ -6,6 +6,7 @@ const {
   getAllUsers,
   registerUser,
   getUserById,
+  deleteUser,
 } = require('../controllers/users.controllers');
 
 UsersRoutes.get('/', getAllUsers);
@@ -18,5 +19,6 @@ UsersRoutes.post(
   ]),
   registerUser
 );
+UsersRoutes.delete('/:id', deleteUser);
 
 module.exports = UsersRoutes;

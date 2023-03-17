@@ -5,7 +5,8 @@ const FeaturedTestsRoutes = express.Router();
 const {
   getAllFeaturedTests,
   createFeaturedTest,
-  getFeaturedTestsById
+  getFeaturedTestsById,
+  deleteFeaturedTest
 } = require('../controllers/featuredTests.controllers');
 
 FeaturedTestsRoutes.get('/', getAllFeaturedTests);
@@ -18,5 +19,6 @@ FeaturedTestsRoutes.post(
   ]),
   createFeaturedTest
 );
+FeaturedTestsRoutes.delete('/:id', deleteFeaturedTest);
 
 module.exports = FeaturedTestsRoutes;

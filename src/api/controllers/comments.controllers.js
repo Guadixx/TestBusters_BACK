@@ -1,5 +1,4 @@
 const Comment = require('../models/comment.model');
-//const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllComments = async (req, res, next) => {
   try {
@@ -27,9 +26,19 @@ const createComment = async (req, res, next) => {
     return next(error);
   }
 };
+const deleteComment = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const comment = await Comment.findByIdAndDelete(id);
+    return res.status(200).json(comment);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getAllComments,
   createComment,
   getCommentById,
+  deleteComment,
 };

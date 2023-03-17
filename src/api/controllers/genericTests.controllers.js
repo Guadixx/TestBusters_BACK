@@ -1,5 +1,5 @@
 const GenericTest = require('../models/genericTest.model');
-//const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
+const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllGenericTests = async (req, res, next) => {
   try {
@@ -54,9 +54,25 @@ const createGenericTest = async (req, res, next) => {
     return next(error);
   }
 };
+const deleteGenericTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const genericTest = await GenericTest.findByIdAndDelete(id);
+    if (genericTest.thumbnail && genericTest.thumbnail != 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png') {
+      deleteImgCloudinary(genericTest.thumbnail);
+    }
+    if (genericTest.banner && genericTest.banner != 'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975927/testbuster/Hero-Banner-Placeholder-Light-2500x1172-1_h7azr9.png') {
+      deleteImgCloudinary(genericTest.banner);
+    }
+    return res.status(200).json(genericTest);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getAllGenericTests,
   createGenericTest,
   getGenericTestsById,
+  deleteGenericTest,
 };

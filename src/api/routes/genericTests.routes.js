@@ -6,6 +6,7 @@ const {
   getAllGenericTests,
   createGenericTest,
   getGenericTestsById,
+  deleteGenericTest,
 } = require('../controllers/genericTests.controllers');
 
 GenericTestsRoutes.get('/', getAllGenericTests);
@@ -18,5 +19,6 @@ GenericTestsRoutes.post(
   ]),
   createGenericTest
 );
+GenericTestsRoutes.delete('/:id', deleteGenericTest);
 
 module.exports = GenericTestsRoutes;

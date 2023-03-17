@@ -1,5 +1,5 @@
 const Achievement = require('../models/achievement.model');
-//const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
+const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllAchievements = async (req, res, next) => {
   try {
@@ -30,9 +30,22 @@ const createAchievement = async (req, res, next) => {
     return next(error);
   }
 };
+const deleteAchievement = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const achievement = await Achievement.findByIdAndDelete(id);
+    if (achievement.image) {
+      deleteImgCloudinary(achievement.image);
+    }
+    return res.status(200).json(achievement);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getAllAchievements,
   createAchievement,
   getAchievementsById,
+  deleteAchievement,
 };

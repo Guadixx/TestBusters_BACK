@@ -1,5 +1,4 @@
 const Leaderboard = require('../models/leaderboard.model');
-//const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllLeaderboards = async (req, res, next) => {
   try {
@@ -27,9 +26,19 @@ const createLeaderboard = async (req, res, next) => {
     return next(error);
   }
 };
+const deleteLeaderboard = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deleteLeaderboard = await Leaderboard.findByIdAndDelete(id);
+    return res.status(200).json(deleteLeaderboard);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getAllLeaderboards,
   createLeaderboard,
   getLeaderboardById,
+  deleteLeaderboard,
 };

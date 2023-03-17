@@ -6,6 +6,7 @@ const {
   getAllData,
   createData,
   getDataById,
+  deleteData,
 } = require('../controllers/data.controllers');
 
 DataRoutes.get('/', getAllData);
@@ -23,5 +24,6 @@ DataRoutes.post(
   ]),
   createData
 );
+DataRoutes.delete('/:id', deleteData),
 
 module.exports = DataRoutes;

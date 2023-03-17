@@ -1,5 +1,4 @@
 const Record = require('../models/record.model');
-//const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllRecords = async (req, res, next) => {
   try {
@@ -27,9 +26,19 @@ const createRecord = async (req, res, next) => {
     return next(error);
   }
 };
+const deleteRecord = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const record = await Record.findByIdAndDelete(id);
+    return res.status(200).json(record);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getAllRecords,
   createRecord,
   getRecordById,
+  deleteRecord,
 };

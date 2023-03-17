@@ -1,5 +1,5 @@
 const FeaturedTest = require('../models/featuredTest.model');
-//const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
+const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllFeaturedTests = async (req, res, next) => {
   try {
@@ -53,9 +53,25 @@ const createFeaturedTest = async (req, res, next) => {
     return next(error);
   }
 };
+const deleteFeaturedTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const featuredTest = await FeaturedTest.findByIdAndDelete(id);
+    if (featuredTest.thumbnail && featuredTest.thumbnail != 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png') {
+      deleteImgCloudinary(featuredTest.thumbnail);
+    }
+    if (featuredTest.banner && featuredTest.banner != 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png') {
+      deleteImgCloudinary(featuredTest.banner);
+    }
+    return res.status(200).json(featuredTest);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getAllFeaturedTests,
   createFeaturedTest,
   getFeaturedTestsById,
+  deleteFeaturedTest,
 };
