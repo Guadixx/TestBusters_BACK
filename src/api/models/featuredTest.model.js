@@ -25,16 +25,16 @@ const FeaturedTestSchema = mongoose.Schema(
     question: { type: String, required: true },
     answer: { type: String, required: true },
     question_text: [{ type: String, trim: true, required: true }],
-    time: { type: String, required: true },
+    time: { type: String, required: true },                                          //-----HASTA AQUÍ PUT NORMAL DE EDITAR O CREAR TEST +RANDOM Y COMMENTS_ENABLED----------------
     average: [{ type: Number }], //PUSHEAMOS TODOS LAS PUNTUACIONES EN TANTO POR CIENTO REDONDEADAS AL PRIMER DECIMAL. EN CASO DE QUE EL USUARIO SUPERE SU MARCA BUSCAMOS LA ANTERIOR Y LA CAMBIAMOS POR LA NUEVA.
     random: { type: Boolean, default: true },
-    comments_enabled: { type: Boolean, default: true },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-    times_played: { type: Number, default: 0 },
-    favorites: [{ type: String }],
+    comments_enabled: { type: Boolean, default: true },                                  //EN EL PUT SI ES FALSE SE BORRAN LOS COMENTARIOS QUE ESTABAN        Y SE PUEDEN BORRAR POR EL USUARIO???
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],                //EN DE CREAR COMENTARIO QUE LO PUSHEE AL TEST
+    times_played: { type: Number, default: 0 },                                          //TIMES PLAYED, AVERAGE Y LEADERBOARD DESDE EL CONTROLADOR AL ACABAR EL TEST QUE ACTUALICE USUARIO Y EL TEST
+    favorites: [{ type: String }],                                                       //UN CONTROLADOR DE TEST PARA FAVORITES Y OTRO PARA RATING
     rating: [{ type: Number, default: 0 }],
-    first: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],
-    second: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],
+    first: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],                        
+    second: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],                       
     third: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],
   },
   {

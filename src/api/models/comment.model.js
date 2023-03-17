@@ -9,7 +9,7 @@ const CommentSchema = mongoose.Schema(
     likes: [{ type: String, trim: true }],
     hearts: [{ type: String, trim: true }],
     hands: [{ type: String, trim: true }],
-    tear: [{ type: String, trim: true }],
+    tear: [{ type: String, trim: true }],  //CONTROLADOR QUE META IDS DEL USUARIO SI NO ESTÁ Y LA QUITE SI ESTÁ
   },
   {
     timestamps: {

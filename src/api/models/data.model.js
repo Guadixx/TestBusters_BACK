@@ -11,7 +11,7 @@ const DataSchema = mongoose.Schema(
     option_2: { type: String, trim: true, default: '' },
     option_3: { type: String, trim: true, default: ''  },
     option_4: { type: String, trim: true, default: ''  },
-    option_5: { type: String, trim: true, default: ''  },
+    option_5: { type: String, trim: true, default: ''  },       //MODIFICAR EL CREATE PARA PASARLE UNA LISTA CON TODAS Y QUE LAS HAGA EN UN BUCLE????
   },
   {
     timestamps: {

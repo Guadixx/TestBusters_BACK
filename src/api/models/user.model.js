@@ -18,21 +18,21 @@ const UserSchema = mongoose.Schema(
       trim: true,
       validate: [validator.isStrongPassword, 'Password not valid'],
     },
-    favourite_featuredTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest' }],
+    favourite_featuredTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest' }],      //EN EL CONTROLADOR DE FAVORITOS DEL TEST
     favourite_genericTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest'  }],
-    created_featuredTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest'  }],
+    created_featuredTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest'  }],          //EN EL CREATE DE CADA TEST
     created_genericTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest'  }],
-    records: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Record' }],
-    followed_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    records: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Record' }],                              //EN EL CONTROLADOR DE ACABAR EL TEST JUNTO CON LEVEL NEXT Y PLAYED
+    followed_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],                    //OTRO CONTROLADOR PARA FOLLOWED Y FOLLOWING DEL MISMO ROLLO QUE EL DE LOS ME GUSTA
     following_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     avatar: { type: String },
     bio: { type: String, trim: true },
     banner: { type: String },
-    level: { type: Array, default: [0, 0] },
+    level: { type: Array, default: [0, 0] },                                                 
     next_level: { type: Number, default: 100 },
     tests_played: { type: Number, default: 0 },
-    achievements: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' },
+    achievements: [    
+      { type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' },                              //ACHIEVEMENTES AL ACABAR TEST, AL CREAR Y EN AMBOS COMPROBAR EL NUMERO DE LOGROS
     ],
   },
   {
