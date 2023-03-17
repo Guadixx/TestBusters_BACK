@@ -47,7 +47,9 @@ const updateAchievements = async (req, res, next) => {
     const { id } = req.params;
     if (req.file) {
       const achievement = await Achievement.findById(id);
-      deleteImgCloudinary(achievement.image);
+      achievement == null
+        ? deleteImgCloudinary(req.file.path)
+        : deleteImgCloudinary(achievement.image);
       const updatedAchievement = await Achievement.findByIdAndUpdate(
         id,
         { ...req.body, image: req.file.path },

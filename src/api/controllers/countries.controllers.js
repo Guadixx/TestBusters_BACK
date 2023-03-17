@@ -24,9 +24,9 @@ const createCountry = async (req, res, next) => {
 const deleteCountry = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const country = await Country.findByIdAndDelete(id);
-    if (country.flag) {
-      deleteImgCloudinary(country.flag);
+    const deletedCountry = await Country.findByIdAndDelete(id);
+    if (deletedCountry.flag) {
+      deleteImgCloudinary(deletedCountry.flag);
     }
     return res.status(200).json('Country deleted');
   } catch (error) {

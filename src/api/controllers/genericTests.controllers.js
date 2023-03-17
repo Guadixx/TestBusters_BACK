@@ -82,6 +82,18 @@ const updateGenericTest = async (req, res, next) => {
     const { id } = req.params;
     if (req.files) {
       const genericTest = await GenericTest.findById(id);
+      if (genericTest != null) {
+        if (req.files.thumbnail) {
+          deleteImgCloudinary(genericTest.thumbnail);
+        }
+        if (req.files.banner) {
+          deleteImgCloudinary(genericTest.banner);
+        }
+      } else {
+        for (const field in req.files) {
+          deleteImgCloudinary(req.files[field][0].path);
+        }
+      }
       const updatedGenericTest = await GenericTest.findByIdAndUpdate(
         id,
         {
@@ -95,12 +107,6 @@ const updateGenericTest = async (req, res, next) => {
         },
         { new: true }
       );
-      if (req.files.thumbnail) {
-        deleteImgCloudinary(genericTest.thumbnail);
-      }
-      if (req.files.banner) {
-        deleteImgCloudinary(genericTest.banner);
-      }
       return res.status(200).json(updatedGenericTest);
     } else {
       const updatedGenericTest = await GenericTest.findByIdAndUpdate(

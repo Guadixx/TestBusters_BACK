@@ -84,6 +84,33 @@ const updateData = async (req, res, next) => {
     const { id } = req.params;
     if (req.files) {
       const data = await Data.findById(id);
+      if (data != null) {
+        if (req.files.question_img) {
+          deleteImgCloudinary(data.question_img);
+        }
+        if (req.files.answer) {
+          deleteImgCloudinary(data.answer);
+        }
+        if (req.files.option_1) {
+          deleteImgCloudinary(data.option_1);
+        }
+        if (req.files.option_2) {
+          deleteImgCloudinary(data.option_2);
+        }
+        if (req.files.option_3) {
+          deleteImgCloudinary(data.option_3);
+        }
+        if (req.files.option_4) {
+          deleteImgCloudinary(data.option_4);
+        }
+        if (req.files.option_5) {
+          deleteImgCloudinary(data.option_5);
+        }
+      } else {
+        for (const field in req.files) {
+          deleteImgCloudinary(req.files[field][0].path);
+        }
+      }
       const updatedData = await Data.findByIdAndUpdate(
         id,
         {
@@ -110,27 +137,6 @@ const updateData = async (req, res, next) => {
         },
         { new: true }
       );
-      if (req.files.question_img) {
-        deleteImgCloudinary(data.question_img);
-      }
-      if (req.files.answer) {
-        deleteImgCloudinary(data.answer);
-      }
-      if (req.files.option_1) {
-        deleteImgCloudinary(data.option_1);
-      }
-      if (req.files.option_2) {
-        deleteImgCloudinary(data.option_2);
-      }
-      if (req.files.option_3) {
-        deleteImgCloudinary(data.option_3);
-      }
-      if (req.files.option_4) {
-        deleteImgCloudinary(data.option_4);
-      }
-      if (req.files.option_5) {
-        deleteImgCloudinary(data.option_5);
-      }
       return res.status(200).json(updatedData);
     } else {
       const updatedData = await Data.findByIdAndUpdate(id, req.body, {
