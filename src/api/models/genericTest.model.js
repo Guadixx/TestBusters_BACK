@@ -7,7 +7,6 @@ const GenericTestSchema = mongoose.Schema(
     description: { type: String, trim: true },
     thumbnail: { type: String },
     banner: { type: String },
-    type: { type: String, required: true },
     topic: { type: String, required: true, trim: true },
     data: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Data' }],
     time: { type: String, required: true },
@@ -17,10 +16,10 @@ const GenericTestSchema = mongoose.Schema(
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     times_played: { type: Number, default: 0 },
     favorites: [{ type: String }],
-    rating: [{ type: Number, required: true }],
-    first: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
-    second: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
-    third: { type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' },
+    rating: [{ type: Number, default: 0}],
+    first: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],
+    second: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],
+    third: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],
   },
   {
     timestamps: {

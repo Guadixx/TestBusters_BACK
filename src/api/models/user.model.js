@@ -4,6 +4,7 @@ const validator = require('validator')
 const UserSchema = mongoose.Schema(
   {
     username: { type: String, required: true, trim: true, unique: true },
+    admin: {type: Boolean, default: false},
     email: {
       type: String,
       trim: true,
@@ -31,9 +32,9 @@ const UserSchema = mongoose.Schema(
     avatar: { type: String},
     bio: { type: String, trim: true },
     banner: { type: String},
-    level: [{ type: Number, required: true }],
-    next_level: { type: Number, required: true},
-    tests_played: { type: Number},
+    level: [{ type: Number, default: 0}],
+    next_level: { type: Number, default: 100},
+    tests_played: { type: Number, default: 0},
     achievements: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' }],
   },
   {

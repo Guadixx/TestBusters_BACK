@@ -40,11 +40,11 @@ const createFeaturedTest = async (req, res, next) => {
   try {
     const newFeaturedTest = new FeaturedTest({
       ...req.body,
-      thumbnail: req.file
-        ? req.file.path
+      thumbnail: req.files.thumbnail
+        ? req.files.thumbnail[0].path
         : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png',
-      banner: req.file
-        ? req.file.path
+      banner: req.files.banner
+        ? req.files.banner[0].path
         : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975927/testbuster/Hero-Banner-Placeholder-Light-2500x1172-1_h7azr9.png',
     });
     const createdFeaturedTest = await newFeaturedTest.save();
