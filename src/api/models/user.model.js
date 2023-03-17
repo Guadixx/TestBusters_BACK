@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 //const bcrypt = require('bcrypt');
-const validator = require('validator')
+const validator = require('validator');
 const UserSchema = mongoose.Schema(
   {
     username: { type: String, required: true, trim: true, unique: true },
-    admin: {type: Boolean, default: false},
+    admin: { type: Boolean, default: false },
     email: {
       type: String,
       trim: true,
@@ -18,24 +18,22 @@ const UserSchema = mongoose.Schema(
       trim: true,
       validate: [validator.isStrongPassword, 'Password not valid'],
     },
-    favourite_tests: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest' } |
-        { type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest' },
-    ],
-    created_tests: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest' } |
-        { type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest' },
-    ],
+    favourite_featuredTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest' }],
+    favourite_genericTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest'  }],
+    created_featuredTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest'  }],
+    created_genericTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest'  }],
     records: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Record' }],
     followed_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     following_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    avatar: { type: String},
+    avatar: { type: String },
     bio: { type: String, trim: true },
-    banner: { type: String},
-    level: [{ type: Number, default: 0}],
-    next_level: { type: Number, default: 100},
-    tests_played: { type: Number, default: 0},
-    achievements: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' }],
+    banner: { type: String },
+    level: { type: Array, default: [0, 0] },
+    next_level: { type: Number, default: 100 },
+    tests_played: { type: Number, default: 0 },
+    achievements: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' },
+    ],
   },
   {
     timestamps: {

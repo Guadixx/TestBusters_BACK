@@ -9,7 +9,15 @@ const getAllLeaderboards = async (req, res, next) => {
     return next(error);
   }
 };
-
+const getLeaderboardById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const leaderboards = await Leaderboard.findById(id).populate('user');
+    return res.status(200).json(leaderboards);
+  } catch (error) {
+    return next(error);
+  }
+};
 const createLeaderboard = async (req, res, next) => {
   try {
     const newleaderboard = new Leaderboard(req.body);
@@ -23,4 +31,5 @@ const createLeaderboard = async (req, res, next) => {
 module.exports = {
   getAllLeaderboards,
   createLeaderboard,
+  getLeaderboardById,
 };

@@ -9,6 +9,15 @@ const getAllComments = async (req, res, next) => {
     return next(error);
   }
 };
+const getCommentById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const comment = await Comment.findById(id).populate('user');
+    return res.status(200).json(comment);
+  } catch (error) {
+    return next(error);
+  }
+};
 const createComment = async (req, res, next) => {
   try {
     const newComment = new Comment(req.body);
@@ -22,4 +31,5 @@ const createComment = async (req, res, next) => {
 module.exports = {
   getAllComments,
   createComment,
+  getCommentById,
 };

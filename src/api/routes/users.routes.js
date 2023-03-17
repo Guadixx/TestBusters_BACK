@@ -5,9 +5,11 @@ const UsersRoutes = express.Router();
 const {
   getAllUsers,
   registerUser,
+  getUserById,
 } = require('../controllers/users.controllers');
 
 UsersRoutes.get('/', getAllUsers);
+UsersRoutes.get('/:id', getUserById);
 UsersRoutes.post(
   '/',
   upload.fields([
