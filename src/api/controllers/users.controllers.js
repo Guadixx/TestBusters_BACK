@@ -84,6 +84,18 @@ const updateUser = async (req, res, next) => {
     const { id } = req.params;
     if (req.files) {
       const user = await User.findById(id);
+      if (user != null) {
+        if (req.files.avatar) {
+          deleteImgCloudinary(user.avatar);
+        }
+        if (req.files.banner) {
+          deleteImgCloudinary(user.banner);
+        }
+      } else {
+        for (const field in req.files) {
+          deleteImgCloudinary(req.files[field][0].path);
+        }
+      }
       const updatedUser = await User.findByIdAndUpdate(
         id,
         {
@@ -93,12 +105,6 @@ const updateUser = async (req, res, next) => {
         },
         { new: true }
       );
-      if (req.files.avatar) {
-        deleteImgCloudinary(user.avatar);
-      }
-      if (req.files.banner) {
-        deleteImgCloudinary(user.banner);
-      }
       return res.status(200).json(updatedUser);
     } else {
       const updatedUser = await User.findByIdAndUpdate(id, req.body, {

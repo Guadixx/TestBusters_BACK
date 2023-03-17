@@ -81,6 +81,18 @@ const updateFeatureTest = async (req, res, next) => {
     const { id } = req.params;
     if (req.files) {
       const featureTest = await FeaturedTest.findById(id);
+      if (featureTest != null) {
+        if (req.files.thumbnail) {
+          deleteImgCloudinary(featureTest.thumbnail);
+        }
+        if (req.files.banner) {
+          deleteImgCloudinary(featureTest.banner);
+        }
+      } else {
+        for (const field in req.files) {
+          deleteImgCloudinary(req.files[field][0].path);
+        }
+      }
       const updatedFeaturedTest = await FeaturedTest.findByIdAndUpdate(
         id,
         {
@@ -94,12 +106,6 @@ const updateFeatureTest = async (req, res, next) => {
         },
         { new: true }
       );
-      if (req.files.thumbnail) {
-        deleteImgCloudinary(featureTest.thumbnail);
-      }
-      if (req.files.banner) {
-        deleteImgCloudinary(featureTest.banner);
-      }
       return res.status(200).json(updatedFeaturedTest);
     } else {
       const updatedFeaturedTest = await FeaturedTest.findByIdAndUpdate(
