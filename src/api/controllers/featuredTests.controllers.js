@@ -57,10 +57,18 @@ const deleteFeaturedTest = async (req, res, next) => {
   try {
     const { id } = req.params;
     const featuredTest = await FeaturedTest.findByIdAndDelete(id);
-    if (featuredTest.thumbnail && featuredTest.thumbnail != 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png') {
+    if (
+      featuredTest.thumbnail &&
+      featuredTest.thumbnail !=
+        'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png'
+    ) {
       deleteImgCloudinary(featuredTest.thumbnail);
     }
-    if (featuredTest.banner && featuredTest.banner != 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png') {
+    if (
+      featuredTest.banner &&
+      featuredTest.banner !=
+        'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png'
+    ) {
       deleteImgCloudinary(featuredTest.banner);
     }
     return res.status(200).json(featuredTest);
@@ -69,9 +77,49 @@ const deleteFeaturedTest = async (req, res, next) => {
   }
 };
 
+const updateFeatureTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (req.files) {
+      const featureTest = await FeaturedTest.findById(id);
+      const updatedFeatureTest = await FeaturedTest.findByIdAndUpdate(
+        id,
+        {
+          ...req.body,
+          thumbnail: req.files.thumbnail
+            ? req.files.thumbnail[0].path
+            : featureTest.thumbnail,
+          banner: req.files.banner
+            ? req.files.banner[0].path
+            : featureTest.banner,
+        },
+        { new: true }
+      );
+      if (req.body.thumbnail) {
+        deleteImgCloudinary(featureTest.thumbnail);
+      }
+      if (req.body.banner) {
+        deleteImgCloudinary(featureTest.banner);
+      }
+      return res.status(200).json(updatedFeatureTest);
+    } else {
+      const updatedFeatureTest = await FeaturedTest.findByIdAndUpdate(
+        id,
+        req.body,
+        {
+          new: true,
+        }
+      );
+      return res.status(200).json(updatedFeatureTest);
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
 module.exports = {
   getAllFeaturedTests,
   createFeaturedTest,
   getFeaturedTestsById,
   deleteFeaturedTest,
+  updateFeatureTest,
 };

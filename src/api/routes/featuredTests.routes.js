@@ -6,7 +6,8 @@ const {
   getAllFeaturedTests,
   createFeaturedTest,
   getFeaturedTestsById,
-  deleteFeaturedTest
+  deleteFeaturedTest,
+  updateFeatureTest,
 } = require('../controllers/featuredTests.controllers');
 
 FeaturedTestsRoutes.get('/', getAllFeaturedTests);
@@ -20,5 +21,13 @@ FeaturedTestsRoutes.post(
   createFeaturedTest
 );
 FeaturedTestsRoutes.delete('/:id', deleteFeaturedTest);
+FeaturedTestsRoutes.put(
+  '/:id',
+  upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'banner', maxCount: 1 },
+  ]),
+  updateFeatureTest
+);
 
 module.exports = FeaturedTestsRoutes;

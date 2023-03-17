@@ -58,13 +58,60 @@ const deleteGenericTest = async (req, res, next) => {
   try {
     const { id } = req.params;
     const genericTest = await GenericTest.findByIdAndDelete(id);
-    if (genericTest.thumbnail && genericTest.thumbnail != 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png') {
+    if (
+      genericTest.thumbnail &&
+      genericTest.thumbnail !=
+        'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png'
+    ) {
       deleteImgCloudinary(genericTest.thumbnail);
     }
-    if (genericTest.banner && genericTest.banner != 'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975927/testbuster/Hero-Banner-Placeholder-Light-2500x1172-1_h7azr9.png') {
+    if (
+      genericTest.banner &&
+      genericTest.banner !=
+        'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975927/testbuster/Hero-Banner-Placeholder-Light-2500x1172-1_h7azr9.png'
+    ) {
       deleteImgCloudinary(genericTest.banner);
     }
     return res.status(200).json(genericTest);
+  } catch (error) {
+    return next(error);
+  }
+};
+const updateGenericTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (req.files) {
+      const genericTest = await GenericTest.findById(id);
+      const updatedGenericTest = await GenericTest.findByIdAndUpdate(
+        id,
+        {
+          ...req.body,
+          thumbnail: req.files.thumbnail
+            ? req.files.thumbnail[0].path
+            : genericTest.thumbnail,
+          banner: req.files.banner
+            ? req.files.banner[0].path
+            : genericTest.banner,
+        },
+        { new: true }
+      );
+      if (req.body.thumbnail) {
+        deleteImgCloudinary(genericTest.thumbnail);
+      }
+      if (req.body.banner) {
+        deleteImgCloudinary(genericTest.banner);
+      }
+      return res.status(200).json(updatedGenericTest);
+    } else {
+      const updatedGenericTest = await GenericTest.findByIdAndUpdate(
+        id,
+        req.body,
+        {
+          new: true,
+        }
+      );
+      return res.status(200).json(updatedGenericTest);
+    }
   } catch (error) {
     return next(error);
   }
@@ -75,4 +122,5 @@ module.exports = {
   createGenericTest,
   getGenericTestsById,
   deleteGenericTest,
+  updateGenericTest,
 };

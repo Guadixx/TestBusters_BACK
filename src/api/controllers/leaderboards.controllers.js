@@ -36,9 +36,22 @@ const deleteLeaderboard = async (req, res, next) => {
   }
 };
 
+const updateLeaderboard = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedLeaderBoard = await Leaderboard.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    return res.status(200).json(updatedLeaderBoard);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   getAllLeaderboards,
   createLeaderboard,
   getLeaderboardById,
   deleteLeaderboard,
+  updateLeaderboard,
 };

@@ -7,6 +7,7 @@ const {
   createGenericTest,
   getGenericTestsById,
   deleteGenericTest,
+  updateGenericTest,
 } = require('../controllers/genericTests.controllers');
 
 GenericTestsRoutes.get('/', getAllGenericTests);
@@ -20,5 +21,13 @@ GenericTestsRoutes.post(
   createGenericTest
 );
 GenericTestsRoutes.delete('/:id', deleteGenericTest);
+GenericTestsRoutes.put(
+  '/:id',
+  upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'banner', maxCount: 1 },
+  ]),
+  updateGenericTest
+);
 
 module.exports = GenericTestsRoutes;
