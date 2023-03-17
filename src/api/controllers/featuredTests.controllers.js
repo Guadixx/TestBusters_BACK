@@ -56,33 +56,32 @@ const createFeaturedTest = async (req, res, next) => {
 const deleteFeaturedTest = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const featuredTest = await FeaturedTest.findByIdAndDelete(id);
+    const deletedFeaturedTest = await FeaturedTest.findByIdAndDelete(id);
     if (
-      featuredTest.thumbnail &&
-      featuredTest.thumbnail !=
+      deletedFeaturedTest.thumbnail &&
+      deletedFeaturedTest.thumbnail !=
         'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png'
     ) {
-      deleteImgCloudinary(featuredTest.thumbnail);
+      deleteImgCloudinary(deletedFeaturedTest.thumbnail);
     }
     if (
-      featuredTest.banner &&
-      featuredTest.banner !=
+      deletedFeaturedTest.banner &&
+      deletedFeaturedTest.banner !=
         'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png'
     ) {
-      deleteImgCloudinary(featuredTest.banner);
+      deleteImgCloudinary(deletedFeaturedTest.banner);
     }
-    return res.status(200).json(featuredTest);
+    return res.status(200).json(deletedFeaturedTest);
   } catch (error) {
     return next(error);
   }
 };
-
 const updateFeatureTest = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (req.files) {
       const featureTest = await FeaturedTest.findById(id);
-      const updatedFeatureTest = await FeaturedTest.findByIdAndUpdate(
+      const updatedFeaturedTest = await FeaturedTest.findByIdAndUpdate(
         id,
         {
           ...req.body,
@@ -101,21 +100,22 @@ const updateFeatureTest = async (req, res, next) => {
       if (req.files.banner) {
         deleteImgCloudinary(featureTest.banner);
       }
-      return res.status(200).json(updatedFeatureTest);
+      return res.status(200).json(updatedFeaturedTest);
     } else {
-      const updatedFeatureTest = await FeaturedTest.findByIdAndUpdate(
+      const updatedFeaturedTest = await FeaturedTest.findByIdAndUpdate(
         id,
         req.body,
         {
           new: true,
         }
       );
-      return res.status(200).json(updatedFeatureTest);
+      return res.status(200).json(updatedFeaturedTest);
     }
   } catch (error) {
     return next(error);
   }
 };
+
 module.exports = {
   getAllFeaturedTests,
   createFeaturedTest,

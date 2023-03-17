@@ -52,34 +52,33 @@ const createData = async (req, res, next) => {
 const deleteData = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const data = await Data.findByIdAndDelete(id);
-    if (data.question_img) {
-      deleteImgCloudinary(data.question_img);
+    const deletedData = await Data.findByIdAndDelete(id);
+    if (deletedData.question_img) {
+      deleteImgCloudinary(deletedData.question_img);
     }
-    if (data.answer) {
-      deleteImgCloudinary(data.answer);
+    if (deletedData.answer) {
+      deleteImgCloudinary(deletedData.answer);
     }
-    if (data.option_1) {
-      deleteImgCloudinary(data.option_1);
+    if (deletedData.option_1) {
+      deleteImgCloudinary(deletedData.option_1);
     }
-    if (data.option_2) {
-      deleteImgCloudinary(data.option_2);
+    if (deletedData.option_2) {
+      deleteImgCloudinary(deletedData.option_2);
     }
-    if (data.option_3) {
-      deleteImgCloudinary(data.option_3);
+    if (deletedData.option_3) {
+      deleteImgCloudinary(deletedData.option_3);
     }
-    if (data.option_4) {
-      deleteImgCloudinary(data.option_4);
+    if (deletedData.option_4) {
+      deleteImgCloudinary(deletedData.option_4);
     }
-    if (data.option_5) {
-      deleteImgCloudinary(data.option_5);
+    if (deletedData.option_5) {
+      deleteImgCloudinary(deletedData.option_5);
     }
-    return res.status(200).json(data);
+    return res.status(200).json(deletedData);
   } catch (error) {
     return next(error);
   }
 };
-
 const updateData = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -143,6 +142,7 @@ const updateData = async (req, res, next) => {
     return next(error);
   }
 };
+
 module.exports = {
   getAllData,
   createData,

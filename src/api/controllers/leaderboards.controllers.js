@@ -29,19 +29,22 @@ const createLeaderboard = async (req, res, next) => {
 const deleteLeaderboard = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deleteLeaderboard = await Leaderboard.findByIdAndDelete(id);
-    return res.status(200).json(deleteLeaderboard);
+    const deletedLeaderboard = await Leaderboard.findByIdAndDelete(id);
+    return res.status(200).json(deletedLeaderboard);
   } catch (error) {
     return next(error);
   }
 };
-
 const updateLeaderboard = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedLeaderBoard = await Leaderboard.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedLeaderBoard = await Leaderboard.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+      }
+    );
     return res.status(200).json(updatedLeaderBoard);
   } catch (error) {
     return next(error);
