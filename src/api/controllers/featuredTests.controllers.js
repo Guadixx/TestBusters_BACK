@@ -95,10 +95,10 @@ const updateFeatureTest = async (req, res, next) => {
         },
         { new: true }
       );
-      if (req.body.thumbnail) {
+      if (req.files.thumbnail) {
         deleteImgCloudinary(featureTest.thumbnail);
       }
-      if (req.body.banner) {
+      if (req.files.banner) {
         deleteImgCloudinary(featureTest.banner);
       }
       return res.status(200).json(updatedFeatureTest);

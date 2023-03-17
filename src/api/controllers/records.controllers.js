@@ -35,10 +35,21 @@ const deleteRecord = async (req, res, next) => {
     return next(error);
   }
 };
-
+const updateRecord = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedRecord = await Record.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    return res.status(200).json(updatedRecord);
+  } catch (error) {
+    return next(error);
+  }
+};
 module.exports = {
   getAllRecords,
   createRecord,
   getRecordById,
   deleteRecord,
+  updateRecord,
 };

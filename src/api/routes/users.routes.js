@@ -7,6 +7,7 @@ const {
   registerUser,
   getUserById,
   deleteUser,
+  updateUser,
 } = require('../controllers/users.controllers');
 
 UsersRoutes.get('/', getAllUsers);
@@ -20,5 +21,12 @@ UsersRoutes.post(
   registerUser
 );
 UsersRoutes.delete('/:id', deleteUser);
+UsersRoutes.put(
+  '/:id',
+  upload.fields([
+    { name: 'avatar', maxCount: 1 },
+    { name: 'banner', maxCount: 1 },
+  ]),
+  updateUser);
 
 module.exports = UsersRoutes;

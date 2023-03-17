@@ -95,10 +95,10 @@ const updateGenericTest = async (req, res, next) => {
         },
         { new: true }
       );
-      if (req.body.thumbnail) {
+      if (req.files.thumbnail) {
         deleteImgCloudinary(genericTest.thumbnail);
       }
-      if (req.body.banner) {
+      if (req.files.banner) {
         deleteImgCloudinary(genericTest.banner);
       }
       return res.status(200).json(updatedGenericTest);

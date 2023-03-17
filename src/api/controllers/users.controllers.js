@@ -67,10 +67,49 @@ const deleteUser = async (req, res, next) => {
     return next(error);
   }
 };
-
+const updateUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (req.files) {
+      const user = await User.findById(id);
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        {
+          ...req.body,
+          avatar: req.files.avatar
+            ? req.files.avatar[0].path
+            : User.avatar,
+          banner: req.files.banner
+            ? req.files.banner[0].path
+            : User.banner,
+        },
+        { new: true }
+      );
+      if (req.files.avatar) {
+        deleteImgCloudinary(user.avatar);
+      }
+      if (req.files.banner) {
+        deleteImgCloudinary(user.banner);
+      }
+      return res.status(200).json(updatedUser);
+    } else {
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        req.body,
+        {
+          new: true,
+        }
+      );
+      return res.status(200).json(updatedUser);
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
 module.exports = {
   getAllUsers,
   registerUser,
   getUserById,
   deleteUser,
+  updateUser,
 };

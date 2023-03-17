@@ -111,25 +111,25 @@ const updateData = async (req, res, next) => {
         },
         { new: true }
       );
-      if (req.body.question_img) {
+      if (req.files.question_img) {
         deleteImgCloudinary(data.question_img);
       }
-      if (req.body.answer) {
+      if (req.files.answer) {
         deleteImgCloudinary(data.answer);
       }
-      if (req.body.option_1) {
+      if (req.files.option_1) {
         deleteImgCloudinary(data.option_1);
       }
-      if (req.body.option_2) {
+      if (req.files.option_2) {
         deleteImgCloudinary(data.option_2);
       }
-      if (req.body.option_3) {
+      if (req.files.option_3) {
         deleteImgCloudinary(data.option_3);
       }
-      if (req.body.option_4) {
+      if (req.files.option_4) {
         deleteImgCloudinary(data.option_4);
       }
-      if (req.body.option_5) {
+      if (req.files.option_5) {
         deleteImgCloudinary(data.option_5);
       }
       return res.status(200).json(updatedData);
