@@ -22,12 +22,12 @@ const registerUser = async (req, res, next) => {
   try {
     const newUser = new User({
       ...req.body,
-      avatar: req.file
-        ? req.file.path
-        : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975722/testbuster/user-dummy-p4ao7p3l9bvrme1wyabiin2vr079ietul8qza7zw2w_h6tvtz.png',
-      banner: req.file
-        ? req.file.path
-        : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975927/testbuster/Hero-Banner-Placeholder-Light-2500x1172-1_h7azr9.png',
+      avatar: req.files.avatar
+        ? req.files.avatar[0].path
+        : 'not found',
+      banner: req.files.banner
+        ? req.files.banner[0].path
+        : 'not found',
     });
     const createdUser = await newUser.save();
     createdUser.password = null;
