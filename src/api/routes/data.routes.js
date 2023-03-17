@@ -2,9 +2,14 @@ const express = require('express');
 const { upload } = require('../../middlewares/files.middleware');
 const DataRoutes = express.Router();
 
-const { getAllData, createData } = require('../controllers/data.controllers');
+const {
+  getAllData,
+  createData,
+  getDataById,
+} = require('../controllers/data.controllers');
 
 DataRoutes.get('/', getAllData);
+DataRoutes.get('/:id', getDataById);
 DataRoutes.post(
   '/',
   upload.fields([
