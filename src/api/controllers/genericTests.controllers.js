@@ -57,22 +57,22 @@ const createGenericTest = async (req, res, next) => {
 const deleteGenericTest = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const genericTest = await GenericTest.findByIdAndDelete(id);
+    const deletedGenericTest = await GenericTest.findByIdAndDelete(id);
     if (
-      genericTest.thumbnail &&
-      genericTest.thumbnail !=
+      deletedGenericTest.thumbnail &&
+      deletedGenericTest.thumbnail !=
         'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png'
     ) {
-      deleteImgCloudinary(genericTest.thumbnail);
+      deleteImgCloudinary(deletedGenericTest.thumbnail);
     }
     if (
-      genericTest.banner &&
-      genericTest.banner !=
+      deletedGenericTest.banner &&
+      deletedGenericTest.banner !=
         'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975927/testbuster/Hero-Banner-Placeholder-Light-2500x1172-1_h7azr9.png'
     ) {
-      deleteImgCloudinary(genericTest.banner);
+      deleteImgCloudinary(deletedGenericTest.banner);
     }
-    return res.status(200).json(genericTest);
+    return res.status(200).json(deletedGenericTest);
   } catch (error) {
     return next(error);
   }

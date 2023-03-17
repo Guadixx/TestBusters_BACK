@@ -29,8 +29,8 @@ const createRecord = async (req, res, next) => {
 const deleteRecord = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const record = await Record.findByIdAndDelete(id);
-    return res.status(200).json(record);
+    const deletedRecord = await Record.findByIdAndDelete(id);
+    return res.status(200).json(deletedRecord);
   } catch (error) {
     return next(error);
   }

@@ -21,18 +21,14 @@ const createCountry = async (req, res, next) => {
     return next(error);
   }
 };
-const putImage = async (req, res, next) => {
-  const flag = req.file ? req.file.path : 'Not image found';
-  const { id } = req.params;
+const deleteCountry = async (req, res, next) => {
   try {
-    const updatedCountry = await Country.findOneAndUpdate(
-      { id: id },
-      { flag: flag },
-      {
-        new: true,
-      }
-    );
-    return res.status(200).json(updatedCountry);
+    const { id } = req.params;
+    const country = await Country.findByIdAndDelete(id);
+    if (country.flag) {
+      deleteImgCloudinary(country.flag);
+    }
+    return res.status(200).json('Country deleted');
   } catch (error) {
     return next(error);
   }
@@ -48,14 +44,18 @@ const updateCountry = async (req, res, next) => {
     return next(error);
   }
 };
-const deleteCountry = async (req, res, next) => {
+const putImage = async (req, res, next) => {
+  const flag = req.file ? req.file.path : 'Not image found';
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const country = await Country.findByIdAndDelete(id);
-    if (country.flag) {
-      deleteImgCloudinary(country.flag);
-    }
-    return res.status(200).json('Country deleted');
+    const updatedCountry = await Country.findOneAndUpdate(
+      { id: id },
+      { flag: flag },
+      {
+        new: true,
+      }
+    );
+    return res.status(200).json(updatedCountry);
   } catch (error) {
     return next(error);
   }
