@@ -35,10 +35,22 @@ const deleteComment = async (req, res, next) => {
     return next(error);
   }
 };
+const updateComment = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedComment = await Comment.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    return res.status(200).json(updatedComment);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getAllComments,
   createComment,
   getCommentById,
   deleteComment,
+  updateComment,
 };

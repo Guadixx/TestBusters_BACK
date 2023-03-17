@@ -43,9 +43,36 @@ const deleteAchievement = async (req, res, next) => {
   }
 };
 
+const updateAchievements = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (req.file) {
+      const achievement = await Achievement.findById(id);
+      deleteImgCloudinary(achievement.image)
+      const updatedAchievement = await Achievement.findByIdAndUpdate(
+        id,
+        {...req.body, image: req.file.path},
+        { new: true }
+      );
+      return res.status(200).json(updatedAchievement);
+    } else {
+      const updatedAchievement = await Achievement.findByIdAndUpdate(
+        id,
+        req.body,
+        { new: true }
+      );
+      return res.status(200).json(updatedAchievement);
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+
 module.exports = {
   getAllAchievements,
   createAchievement,
   getAchievementsById,
   deleteAchievement,
+  updateAchievements,
 };

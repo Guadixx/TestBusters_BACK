@@ -7,11 +7,13 @@ const {
   createAchievement,
   getAchievementsById,
   deleteAchievement,
+  updateAchievements,
 } = require('../controllers/achievements.controllers');
 
 AchievementsRoutes.get('/', getAllAchievements);
 AchievementsRoutes.get('/:id', getAchievementsById);
 AchievementsRoutes.post('/', upload.single('image'), createAchievement);
+AchievementsRoutes.put('/:id', upload.single('image'), updateAchievements);
 AchievementsRoutes.delete('/:id', deleteAchievement);
 
 module.exports = AchievementsRoutes;

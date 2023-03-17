@@ -80,9 +80,73 @@ const deleteData = async (req, res, next) => {
   }
 };
 
+const updateData = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (req.files) {
+      const data = await Data.findById(id);
+      const updatedData = await Data.findByIdAndUpdate(
+        id,
+        {
+          ...req.body,
+          question_img: req.files.question_img
+            ? req.files.question_img[0].path
+            : data.question_img,
+          answer: req.files.answer ? req.files.answer[0].path : data.answer,
+          option_1: req.files.option_1
+            ? req.files.option_1[0].path
+            : data.option_1,
+          option_2: req.files.option_2
+            ? req.files.option_2[0].path
+            : data.option_2,
+          option_3: req.files.option_3
+            ? req.files.option_3[0].path
+            : data.option_3,
+          option_4: req.files.option_4
+            ? req.files.option_4[0].path
+            : data.option_4,
+          option_5: req.files.option_5
+            ? req.files.option_5[0].path
+            : data.option_5,
+        },
+        { new: true }
+      );
+      if (req.body.question_img) {
+        deleteImgCloudinary(data.question_img);
+      }
+      if (req.body.answer) {
+        deleteImgCloudinary(data.answer);
+      }
+      if (req.body.option_1) {
+        deleteImgCloudinary(data.option_1);
+      }
+      if (req.body.option_2) {
+        deleteImgCloudinary(data.option_2);
+      }
+      if (req.body.option_3) {
+        deleteImgCloudinary(data.option_3);
+      }
+      if (req.body.option_4) {
+        deleteImgCloudinary(data.option_4);
+      }
+      if (req.body.option_5) {
+        deleteImgCloudinary(data.option_5);
+      }
+      return res.status(200).json(updatedData);
+    } else {
+      const updatedData = await Data.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
+      return res.status(200).json(updatedData);
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
 module.exports = {
   getAllData,
   createData,
   getDataById,
   deleteData,
+  updateData,
 };
