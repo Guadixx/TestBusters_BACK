@@ -23,49 +23,50 @@
     //
 //COMMENT ---------------------------AUTH-------------------------------
     //
-    //POST    -> $push EN _ID DEL TEST EN test.comments                                     DONE******************************
-    //PUT     -> IF user._id ESTÁ $pull ELSE $push LIKES/HEARTS/HANDS/TEAR                  DONE******************************
-    //PUT     -> PROTECTED DATE/USER/ID                                                      DONE******************************
-    //GET ALL -> IF comment.user == null -> DELETE                                           DONE******************************
+    //POST    -> $push EN _ID DEL TEST EN test.comments                                            DONE******************************
+    //PUT     -> IF user._id ESTÁ $pull ELSE $push LIKES/HEARTS/HANDS/TEAR                         DONE******************************
+    //PUT     -> PROTECTED DATE/USER/ID                                                            DONE******************************
+    //GET ALL -> IF comment.user == null -> DELETE                                                 DONE******************************
     //
 //COUNTRY ------------------------AUTH+ADMIN----------------------------
     //
-    //GET ALL ->FILTER 1 Y 2                                                                 DONE******************************
+    //GET ALL ->FILTER 1 Y 2                                                                       DONE******************************
     //
 //DATA    ---------------------------AUTH + LEVEL------------------------
     //
-    //POST    -> SE METEN TODAS EN UN LISTA Y POR CADA UNA SE HACE UN POST Y UN $PUSH AL _ID DEL TEST Y DEFINIENDO EL ID DE NÚMERO     DONE******************************
-    //PUT     -> SE METEN TODAS EN UN LISTA Y POR CADA UNA SE HACE UN POST Y UN $PUSH AL _ID DEL TEST BORRANDO LO ANTERIOR Y REDEFINIENDO EL ID DE NÚMERO
+    //POST    -> SE METEN TODAS EN UN LISTA Y POR CADA UNA SE HACE UN POST Y 
+    //              UN $PUSH AL _ID DEL TEST Y DEFINIENDO EL ID DE NÚMERO                           DONE******************************
+    //PUT  -> SE HACE UNO NUEVO Y SE DA LA POSIBILIDAD DE BORRAR EL ANTERIOR SI NO HA JUGADO NAIDE  DONE******************************
+    //                ----------------------------------------------------------------------------- DONE******************************
     //       
 //FTESTS  --------------------------AUTH PARA CREAR +LEVEL---------------
     //
-    //GET ALL -> FILTER BY NAME Y PAGINACIÓN
-    //PUT     -> PROTECTED CREATOR, SI COMMENTS_ENABLED==FALSE DELETE COMMENTS Y test.comments=[]
-    //PUT     -> PARA FAVOURITE QUE FUNCIONE IGUAL QUE LIKES Y ESO
-    //PUT     -> AL FINAL DEL TEST QUE MODIFIQUE TIMES_PLAYED Y AVERAGE/RATING/LEADERBOARD EN CASO
+    //GET ALL -> FILTER BY NAME Y PAGINACIÓN                                                          DONE******************************
+    //PUT     -> PROTECTED CREATOR, SI COMMENTS_ENABLED==FALSE DELETE COMMENTS Y test.comments=[]     DONE******************************
+    //PUT     -> AL FINAL DEL TEST QUE MODIFIQUE TIMES_PLAYED Y AVERAGE/RATING/LEADERBOARD EN CASO    ----CONTROLADOR END TEST----
     //DELETE  ->
     //
 //GTESTS  ---------------------------AUTH PARA CREAR +LEVEL--------------
-    //
-    //GET ALL -> FILTER BY NAME Y PAGINACIÓN
-    //PUT     -> PROTECTED CREATOR, SI COMMENTS_ENABLED==FALSE DELETE COMMENTS Y test.comments=[]
-    //PUT     -> PARA FAVOURITE QUE FUNCIONE IGUAL QUE LIKES Y ESO
-    //PUT     -> AL FINAL DEL TEST QUE MODIFIQUE TIMES_PLAYED Y AVERAGE/RATING/LEADERBOARD EN CASO
+    // 
+    //GET ALL -> FILTER BY NAME Y PAGINACIÓN                                                         DONE******************************
+    //PUT     -> PROTECTED CREATOR, SI COMMENTS_ENABLED==FALSE DELETE COMMENTS Y test.comments=[]    DONE******************************
+    //PUT     -> PARA FAVOURITE QUE FUNCIONE IGUAL QUE LIKES Y ESO                                   DONE*****************************
+    //PUT     -> AL FINAL DEL TEST QUE MODIFIQUE TIMES_PLAYED Y AVERAGE/RATING/LEADERBOARD EN CASO                 ----CONTROLADOR END TEST----
     //
 //LEADERBOARD  ---------------------------AUTH---------------------------
     //
     //POST    -> COMPROBACIÓN SI SUPERA Y REAJUSTE
     //PUT     -> USER PROTECTED
-    // 
+    //
 //RECORDS      ---------------------------AUTH---------------------------
     //
-    //POST    -> COMPORBAR SI EXISTE SI NO CREAR
+    //POST    -> COMPORBAR SI EXISTE SI NO CREAR                                                        ----CONTROLADOR END TEST----
     //PUT     -> USER PROTECTED
-    //PUT     -> AL FINAL DEL TEST QUE MODIFIQUE LASTSCORE Y RATING/SCORE EN CASO
+    //PUT     -> AL FINAL DEL TEST QUE MODIFIQUE LASTSCORE Y RATING/SCORE EN CASO                       ----CONTROLADOR END TEST----
     //
 //USERS       
     //
-    //DELETE      DELETE RECORDS Y CREATED TESTS ------------------------------------DONE
-    //GET ALL -> FILTER BY NAME Y PAGINACIÓN
-    //PUT DE LEVEL Y NEXT_LEVEL
-    //TEST_PLAYED Y ACHIEVEMENTS AL FINALIZAR TEST
+    //DELETE      DELETE RECORDS Y CREATED TESTS ---                                                DONE*****************************
+    //GET ALL ->  FILTER BY NAME Y PAGINACIÓN
+    //PUT DE LEVEL Y NEXT_LEVEL                                                                     ----CONTROLADOR END TEST----
+    //TEST_PLAYED Y ACHIEVEMENTS AL FINALIZAR TEST                                                  ----CONTROLADOR END TEST----

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const FeaturedTestSchema = mongoose.Schema(
   {
+    test_type: {type: String, required: true, default: "featured"},
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     title: { type: String, required: true, trim: true, unique: true },
     description: { type: String, trim: true },
@@ -32,7 +33,7 @@ const FeaturedTestSchema = mongoose.Schema(
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],                //EN DE CREAR COMENTARIO QUE LO PUSHEE AL TEST
     times_played: { type: Number, default: 0 },                                          //TIMES PLAYED, AVERAGE Y LEADERBOARD DESDE EL CONTROLADOR AL ACABAR EL TEST QUE ACTUALICE USUARIO Y EL TEST
     favorites: [{ type: String }],                                                       //UN CONTROLADOR DE TEST PARA FAVORITES Y OTRO PARA RATING
-    rating: [{ type: Number, default: 0 }],
+    rating: { type: Array, default: [0,0] },
     first: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],                        
     second: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],                       
     third: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Leaderboard' }],

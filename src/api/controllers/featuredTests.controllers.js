@@ -1,11 +1,55 @@
 const FeaturedTest = require('../models/featuredTest.model');
-const Comment = require('../models/comment.model')
+const Comment = require('../models/comment.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllFeaturedTests = async (req, res, next) => {
   try {
-    const featuredTest = await FeaturedTest.find().populate('creator');
-    return res.status(200).json(featuredTest);
+    const numTests = await FeaturedTest.countDocuments();
+    let title = req.query.title
+      ? req.query.title
+      : { $regex: '', $options: 'i' };
+    let page =
+        req.query.page && !isNaN(parseInt(req.query.page))
+          ? parseInt(req.query.page)
+          : 1,
+      limit =
+        req.query.limit && !isNaN(parseInt(req.query.limit))
+          ? parseInt(req.query.limit)
+          : 12,
+      order =
+        req.query.order == 'created' ||
+        req.query.order == 'favorites' ||
+        req.query.order == 'times_played' ||
+        req.query.order == 'times_played'
+          ? req.query.order
+          : 'times_played',
+      mode = req.query.mode == '1' ? parseInt(req.query.mode) : -1;
+    let numPages =
+      numTests % limit >= 0 ? numTests / limit + 1 : numTests / limit;
+    numPages = numPages % 2 != 0 ? Math.ceil(numPages) - 1 : numPages;
+    numPages = numPages == 0 ? 1 : numPages;
+    if (page > numPages || page < 1) {
+      page = numPages;
+    }
+    const prev = page == 1 ? null : page - 1;
+    const next = page == numPages ? null : page + 1;
+    skip = (page - 1) * limit;
+
+    const featuredTest = await FeaturedTest.find({ title: title })
+      .sort({ [order]: mode })
+      .skip(skip)
+      .limit(limit)
+      .populate('creator');
+    return res.status(200).json({
+      info: {
+        page: page,
+        totalpages: numPages,
+        next: next,
+        prev: prev,
+        total: numTests,
+      },
+      results: featuredTest,
+    });
   } catch (error) {
     return next(error);
   }
@@ -13,15 +57,19 @@ const getAllFeaturedTests = async (req, res, next) => {
 const getFeaturedTestsById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const checkComments = await FeaturedTest.findById(id)
-    const comments = []
+    const checkComments = await FeaturedTest.findById(id);
+    const comments = [];
     for (const commentId of checkComments.comments) {
-      const comment = await Comment.findById(commentId)
-      if (comment!=null){
-        comments.push(comment)
+      const comment = await Comment.findById(commentId);
+      if (comment != null) {
+        comments.push(comment);
       }
     }
-    await FeaturedTest.findByIdAndUpdate(id, {comments: comments}, {new: true})
+    await FeaturedTest.findByIdAndUpdate(
+      id,
+      { comments: comments },
+      { new: true }
+    );
     const featuredTest = await FeaturedTest.findById(id).populate([
       'creator',
       {
@@ -91,6 +139,7 @@ const updateFeatureTest = async (req, res, next) => {
     const { id } = req.params;
     if (req.files) {
       const featureTest = await FeaturedTest.findById(id);
+      req.body.user = featureTest.user;
       if (featureTest != null) {
         if (req.files.thumbnail) {
           deleteImgCloudinary(featureTest.thumbnail);
@@ -131,6 +180,27 @@ const updateFeatureTest = async (req, res, next) => {
     return next(error);
   }
 };
+const updateFavoritesFTest = async (req, res, next) => {
+  try {
+    const { testId } = req.body;
+    const { userId } = req.body;
+    const featuredTest = await FeaturedTest.findById(testId);
+    featuredTest.favorites.includes(userId)
+      ? await FeaturedTest.findByIdAndUpdate(
+          testId,
+          { $pull: { favorites: userId } },
+          { new: true }
+        )
+      : await FeaturedTest.findByIdAndUpdate(
+          testId,
+          { $push: { favorites: userId } },
+          { new: true }
+        );
+    return res.status(200).json('favs updated');
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getAllFeaturedTests,
@@ -138,4 +208,5 @@ module.exports = {
   getFeaturedTestsById,
   deleteFeaturedTest,
   updateFeatureTest,
+  updateFavoritesFTest,
 };
