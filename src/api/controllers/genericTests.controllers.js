@@ -1,4 +1,5 @@
 const GenericTest = require('../models/genericTest.model');
+const Comment = require('../models/comment.model')
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllGenericTests = async (req, res, next) => {
@@ -12,6 +13,15 @@ const getAllGenericTests = async (req, res, next) => {
 const getGenericTestsById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const checkComments = await FeaturedTest.findById(id)
+    const comments = []
+    for (const commentId of checkComments.comments) {
+      const comment = await Comment.findById(commentId)
+      if (comment!=null){
+        comments.push(comment)
+      }
+    }
+    await FeaturedTest.findByIdAndUpdate(id, {comments: comments}, {new: true})
     const genericTest = await GenericTest.findById(id).populate([
       'creator',
       'data',

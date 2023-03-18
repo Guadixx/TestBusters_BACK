@@ -1,4 +1,8 @@
 const User = require('../models/user.model');
+const Comment = require('../models/comment.model')
+const FeaturedTest = require('../models/featuredTest.model')
+const GenericTest = require('../models/genericTest.model')
+const Record = require('../models/record.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllUsers = async (req, res, next) => {
@@ -27,7 +31,10 @@ const getUserById = async (req, res, next) => {
       'created_featuredTests',
       'favourite_genericTests',
       'created_genericTests',
-      'records',
+      {
+        path: 'records',
+        populate: { path: 'test' },
+      },
       'achievements',
       'followed_users',
       'following_users',
@@ -60,6 +67,23 @@ const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedUser = await User.findByIdAndDelete(id);
+    const created_featuredTests = deletedUser.created_featuredTests
+    const created_genericTests = deletedUser.created_genericTests
+    const records = deletedUser.records
+    const deletedUserComments = await Comment.find({user: deletedUser._id})
+    for (const comment of deletedUserComments) {
+      await Comment.findByIdAndDelete(comment._id)
+      
+    }
+    for (const created of created_featuredTests) {
+      await FeaturedTest.findByIdAndDelete(created)
+    }
+    for (const created of created_genericTests) {
+      await GenericTest.findByIdAndDelete(created)
+    }
+    for (const created of records) {
+      await Record.findByIdAndDelete(created)
+    }
     if (
       deletedUser.avatar &&
       deletedUser.avatar !=
