@@ -23,15 +23,15 @@
     //
 //COMMENT ---------------------------AUTH-------------------------------
     //
-    //POST    -> $push EN _ID DEL TEST EN test.comments
+    //POST    -> $push EN _ID DEL TEST EN test.comments                                     DONE******************************
     //PUT     -> IF user._id ESTÁ $pull ELSE $push LIKES/HEARTS/HANDS/TEAR
     //PUT     -> PROTECTED DATE/USER/ID
-    //GET ALL -> IF comment.user == null -> DELETE
+    //GET ALL -> IF comment.user == null -> DELETE  
     //DELETE  -> BY USERTEST O USERCOMMENT
     //
 //COUNTRY ------------------------AUTH+ADMIN----------------------------
     //
-    //GET ALL ->FILTER 1 Y 2
+    //GET ALL ->FILTER 1 Y 2                                                                 DONE******************************
     //
 //DATA    ---------------------------AUTH + LEVEL------------------------
     //
@@ -67,6 +67,7 @@
     //
 //USERS       
     //
+    //DELETE      DELETE RECORDS Y CREATED TESTS ------------------------------------DONE
     //GET ALL -> FILTER BY NAME Y PAGINACIÓN
     //PUT DE LEVEL Y NEXT_LEVEL
     //TEST_PLAYED Y ACHIEVEMENTS AL FINALIZAR TEST
