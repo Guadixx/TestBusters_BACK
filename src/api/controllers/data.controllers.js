@@ -20,31 +20,42 @@ const getDataById = async (req, res, next) => {
 };
 const createData = async (req, res, next) => {
   try {
-    const newData = new Data({
-      question: req.body.question,
-      type: req.body.type,
-      question_img: req.files.question_img
-        ? req.files.question_img[0].path
+    const dataNumber = await Data.countDocuments();
+    let index = -1;
+    for (const data of req.body.answer) 
+    { index++ 
+      const newData = new Data({
+      id: dataNumber + index,
+      question: req.body.question[index],
+      type: req.body.type[index],
+      question_img: req.files.question_img && req.files.question_img[index] != undefined 
+        ? req.files.question_img[index].path
         : '',
-      answer: req.files.answer ? req.files.answer[0].path : req.body.answer,
-      option_1: req.files.option_1
-        ? req.files.option_1[0].path
-        : req.body.option_1,
-      option_2: req.files.option_2
-        ? req.files.option_2[0].path
-        : req.body.option_2,
-      option_3: req.files.option_3
-        ? req.files.option_3[0].path
-        : req.body.option_3,
-      option_4: req.files.option_4
-        ? req.files.option_4[0].path
-        : req.body.option_4,
-      option_5: req.files.option_5
-        ? req.files.option_5[0].path
-        : req.body.option_5,
+      answer: req.files.answer && req.files.answer[index] != undefined ? req.files.answer[index].path 
+      : typeof data == "string" ? data : data[index],
+      
+      option_1: req.files.option_1 && req.files.option_1[index] != undefined 
+        ? req.files.option_1[index].path
+        : typeof req.body.option_1 ==  "string" ? req.body.option_1 : req.body.option_1[index],   
+
+      option_2: req.files.option_2 && req.files.option_2[index] != undefined 
+        ? req.files.option_2[index].path
+        : typeof req.body.option_2 == "string" ? req.body.option_2 : req.body.option_2[index],
+
+      option_3: req.files.option_3 && req.files.option_3[index] != undefined 
+        ? req.files.option_3[index].path
+        : typeof req.body.option_3 == "string" ?  req.files.option_3 : req.body.option_3[index] ,
+
+      option_4: req.files.option_4 && req.files.option_4[index] != undefined 
+        ? req.files.option_4[index].path
+        : typeof req.body.option_4 == "string" ? req.files.option_4 : req.body.option_4[index],
+
+      option_5: req.files.option_5 && req.files.option_5[index] != undefined 
+        ? req.files.option_5[index].path
+        : typeof req.body.option_5 == "string" ? req.files.option_5 : req.body.option_5[index],
     });
-    const createdData = await newData.save();
-    return res.status(201).json(createdData);
+    await newData.save()};
+    return res.status(200).json("hola");
   } catch (error) {
     return next(error);
   }
