@@ -1,4 +1,5 @@
 const Data = require('../models/data.model');
+const GenericTest = require('../models/genericTest.model')
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllData = async (req, res, next) => {
@@ -21,41 +22,91 @@ const getDataById = async (req, res, next) => {
 const createData = async (req, res, next) => {
   try {
     const dataNumber = await Data.countDocuments();
-    let index = -1;
-    for (const data of req.body.answer) 
-    { index++ 
-      const newData = new Data({
-      id: dataNumber + index,
-      question: req.body.question[index],
-      type: req.body.type[index],
-      question_img: req.files.question_img && req.files.question_img[index] != undefined 
-        ? req.files.question_img[index].path
-        : '',
-      answer: req.files.answer && req.files.answer[index] != undefined ? req.files.answer[index].path 
-      : typeof data == "string" ? data : data[index],
-      
-      option_1: req.files.option_1 && req.files.option_1[index] != undefined 
-        ? req.files.option_1[index].path
-        : typeof req.body.option_1 ==  "string" ? req.body.option_1 : req.body.option_1[index],   
-
-      option_2: req.files.option_2 && req.files.option_2[index] != undefined 
-        ? req.files.option_2[index].path
-        : typeof req.body.option_2 == "string" ? req.body.option_2 : req.body.option_2[index],
-
-      option_3: req.files.option_3 && req.files.option_3[index] != undefined 
-        ? req.files.option_3[index].path
-        : typeof req.body.option_3 == "string" ?  req.files.option_3 : req.body.option_3[index] ,
-
-      option_4: req.files.option_4 && req.files.option_4[index] != undefined 
-        ? req.files.option_4[index].path
-        : typeof req.body.option_4 == "string" ? req.files.option_4 : req.body.option_4[index],
-
-      option_5: req.files.option_5 && req.files.option_5[index] != undefined 
-        ? req.files.option_5[index].path
-        : typeof req.body.option_5 == "string" ? req.files.option_5 : req.body.option_5[index],
-    });
-    await newData.save()};
-    return res.status(200).json("hola");
+    let indexText = 0;
+    let indexImage = 0;
+    const {testId} = req.body
+    for (const type of req.body.type) {
+      if (type == 'image') {
+        const newData = new Data({
+          id: dataNumber + indexImage + indexText,
+          question: req.body.question[indexImage + indexText],
+          type: type,
+          question_img: req.files.question_img[indexText + indexImage].path,
+          answer: req.files.answer[indexImage].path,
+          option_1: req.files.option_1
+            ? req.files.option_1[indexImage].path
+            : '',
+          option_2: req.files.option_2
+            ? req.files.option_2[indexImage].path
+            : '',
+          option_3: req.files.option_3
+            ? req.files.option_3[indexImage].path
+            : '',
+          option_4: req.files.option_4
+            ? req.files.option_4[indexImage].path
+            : '',
+          option_5: req.files.option_5
+            ? req.files.option_5[indexImage].path
+            : '',
+        });
+        indexImage++;
+        await newData.save();
+        await GenericTest.findByIdAndUpdate(
+          testId,
+          { $push: { data: newData._id } },
+          { new: true }
+        )
+      } else {
+        const newData = new Data({
+          id: dataNumber + indexImage + indexText,
+          question: req.body.question[indexImage + indexText],
+          type: type,
+          question_img: req.files.question_img[indexText + indexImage].path,
+          answer:
+            typeof req.body.answer == 'string'
+              ? req.body.answer
+              : req.body.answer[indexText],
+          option_1:
+            typeof req.body.option_1 == 'string'
+              ? req.body.option_1
+              : typeof req.body.option_1 == 'object'
+              ? req.body.option_1[indexText]
+              : '',
+          option_2:
+            typeof req.body.option_2 == 'string'
+              ? req.body.option_2
+              : typeof req.body.option_2 == 'object'
+              ? req.body.option_2[indexText]
+              : '',
+          option_3:
+            typeof req.body.option_3 == 'string'
+              ? req.body.option_3
+              : typeof req.body.option_3 == 'object'
+              ? req.body.option_3[indexText]
+              : '',
+          option_4:
+            typeof req.body.option_4 == 'string'
+              ? req.body.option_4
+              : typeof req.body.option_4 == 'object'
+              ? req.body.option_4[indexText]
+              : '',
+          option_5:
+            typeof req.body.option_5 == 'string'
+              ? req.body.option_5
+              : typeof req.body.option_5 == 'object'
+              ? req.body.option_5[indexText]
+              : '',
+        });
+        indexText++;
+        await newData.save();
+        await GenericTest.findByIdAndUpdate(
+          testId,
+          { $push: { data: newData._id } },
+          { new: true }
+        )
+      }
+    }
+    return res.status(200).json('data created');
   } catch (error) {
     return next(error);
   }

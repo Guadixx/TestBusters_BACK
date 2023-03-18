@@ -24,10 +24,9 @@
 //COMMENT ---------------------------AUTH-------------------------------
     //
     //POST    -> $push EN _ID DEL TEST EN test.comments                                     DONE******************************
-    //PUT     -> IF user._id ESTÁ $pull ELSE $push LIKES/HEARTS/HANDS/TEAR
-    //PUT     -> PROTECTED DATE/USER/ID
-    //GET ALL -> IF comment.user == null -> DELETE  
-    //DELETE  -> BY USERTEST O USERCOMMENT
+    //PUT     -> IF user._id ESTÁ $pull ELSE $push LIKES/HEARTS/HANDS/TEAR                  DONE******************************
+    //PUT     -> PROTECTED DATE/USER/ID                                                      DONE******************************
+    //GET ALL -> IF comment.user == null -> DELETE                                           DONE******************************
     //
 //COUNTRY ------------------------AUTH+ADMIN----------------------------
     //
@@ -35,9 +34,8 @@
     //
 //DATA    ---------------------------AUTH + LEVEL------------------------
     //
-    //POST    -> SE METEN TODAS EN UN LISTA Y POR CADA UNA SE HACE UN POST Y UN $PUSH AL _ID DEL TEST Y DEFINIENDO EL ID DE NÚMERO
+    //POST    -> SE METEN TODAS EN UN LISTA Y POR CADA UNA SE HACE UN POST Y UN $PUSH AL _ID DEL TEST Y DEFINIENDO EL ID DE NÚMERO     DONE******************************
     //PUT     -> SE METEN TODAS EN UN LISTA Y POR CADA UNA SE HACE UN POST Y UN $PUSH AL _ID DEL TEST BORRANDO LO ANTERIOR Y REDEFINIENDO EL ID DE NÚMERO
-    //        -> SI TIMES PLAYED ES == 0 SE PUEDE MODIFICAR Y DELETE DEL ORIGINAL. SI NO SE PUEDE CREAR UNO NUEVO EN BASE A ESE. Y SI QUIERE MODIFICAR UNA ERRATA O ALGO Q NOS MANDE UN CORREO
     //       
 //FTESTS  --------------------------AUTH PARA CREAR +LEVEL---------------
     //
