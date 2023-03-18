@@ -1,24 +1,63 @@
 const User = require('../models/user.model');
-const Comment = require('../models/comment.model')
-const FeaturedTest = require('../models/featuredTest.model')
-const GenericTest = require('../models/genericTest.model')
+const Comment = require('../models/comment.model');
+const FeaturedTest = require('../models/featuredTest.model');
+const GenericTest = require('../models/genericTest.model');
 const Record = require('../models/record.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find().populate([
-      'favourite_featuredTests',
-      'created_featuredTests',
-      'favourite_genericTests',
-      'created_genericTests',
-      'records',
-      'achievements',
-      'followed_users',
-      'following_users',
-      'achievements',
-    ]);
-    return res.status(200).json(users);
+    const numUsers = await User.countDocuments();
+    let username = req.query.username
+      ? { $regex: req.query.username, $options: 'i' }
+      : { $regex: '', $options: 'i' };
+    let page =
+        req.query.page && !isNaN(parseInt(req.query.page))
+          ? parseInt(req.query.page)
+          : 1,
+      limit =
+        req.query.limit && !isNaN(parseInt(req.query.limit))
+          ? parseInt(req.query.limit)
+          : 12,
+      order =
+        req.query.order == 'tests_played' ? req.query.order : 'next_level',
+      mode = req.query.mode == '1' ? parseInt(req.query.mode) : -1;
+    let numPages =
+      numUsers % limit >= 0 ? numUsers / limit + 1 : numUsers / limit;
+    numPages = numPages % 2 != 0 ? Math.ceil(numPages) - 1 : numPages;
+    numPages = numPages == 0 ? 1 : numPages;
+    if (page > numPages || page < 1) {
+      page = numPages;
+    }
+    const prev = page == 1 ? null : page - 1;
+    const next = page == numPages ? null : page + 1;
+    skip = (page - 1) * limit;
+
+    const users = await User.find({ username: username })
+      .sort({ [order]: mode })
+      .skip(skip)
+      .limit(limit)
+      .populate([
+        'favourite_featuredTests',
+        'created_featuredTests',
+        'favourite_genericTests',
+        'created_genericTests',
+        'records',
+        'achievements',
+        'followed_users',
+        'following_users',
+        'achievements',
+      ]);
+    return res.status(200).json({
+      info: {
+        page: page,
+        totalpages: numPages,
+        next: next,
+        prev: prev,
+        total_users: numUsers,
+      },
+      results: users,
+    });
   } catch (error) {
     return next(error);
   }
@@ -26,6 +65,27 @@ const getAllUsers = async (req, res, next) => {
 const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const checkFollows = await User.findById(id);
+    for (const userId of checkFollows.followed_users) {
+      const userToCheck = await User.findById(userId);
+      if (userToCheck == null) {
+        await User.findByIdAndUpdate(
+          id,
+          { $pull: { followed_users: userId } },
+          { new: true }
+        );
+      }
+    }
+    for (const userId of checkFollows.following_users) {
+      const userToCheck = await User.findById(userId);
+      if (userToCheck == null) {
+        await User.findByIdAndUpdate(
+          id,
+          { $pull: { following_users: userId } },
+          { new: true }
+        );
+      }
+    }
     const user = await User.findById(id).populate([
       'favourite_featuredTests',
       'created_featuredTests',
@@ -67,22 +127,21 @@ const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedUser = await User.findByIdAndDelete(id);
-    const created_featuredTests = deletedUser.created_featuredTests
-    const created_genericTests = deletedUser.created_genericTests
-    const records = deletedUser.records
-    const deletedUserComments = await Comment.find({user: deletedUser._id})
+    const created_featuredTests = deletedUser.created_featuredTests;
+    const created_genericTests = deletedUser.created_genericTests;
+    const records = deletedUser.records;
+    const deletedUserComments = await Comment.find({ user: deletedUser._id });
     for (const comment of deletedUserComments) {
-      await Comment.findByIdAndDelete(comment._id)
-      
+      await Comment.findByIdAndDelete(comment._id);
     }
     for (const created of created_featuredTests) {
-      await FeaturedTest.findByIdAndDelete(created)
+      await FeaturedTest.findByIdAndDelete(created);
     }
     for (const created of created_genericTests) {
-      await GenericTest.findByIdAndDelete(created)
+      await GenericTest.findByIdAndDelete(created);
     }
     for (const created of records) {
-      await Record.findByIdAndDelete(created)
+      await Record.findByIdAndDelete(created);
     }
     if (
       deletedUser.avatar &&
@@ -140,11 +199,32 @@ const updateUser = async (req, res, next) => {
     return next(error);
   }
 };
-
+const handleFollow = async (req, res, next) => {
+  try {
+    const { followedUserId } = req.body;
+    const { followingUserId } = req.body;
+    const followedUser = await User.findById(followedUserId);
+    followedUser.followed_users.includes(followingUserId)
+      ? await User.findByIdAndUpdate(
+          followedUser,
+          { $pull: { followed_users: followingUserId } },
+          { new: true }
+        )
+      : await User.findByIdAndUpdate(
+          followedUser,
+          { $push: { followed_users: followingUserId } },
+          { new: true }
+        );
+    return res.status(200).json('follow');
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   getAllUsers,
   registerUser,
   getUserById,
   deleteUser,
   updateUser,
+  handleFollow,
 };

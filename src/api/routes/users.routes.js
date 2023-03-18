@@ -8,6 +8,7 @@ const {
   getUserById,
   deleteUser,
   updateUser,
+  handleFollow,
 } = require('../controllers/users.controllers');
 
 UsersRoutes.get('/', getAllUsers);
@@ -27,6 +28,11 @@ UsersRoutes.put(
     { name: 'avatar', maxCount: 1 },
     { name: 'banner', maxCount: 1 },
   ]),
-  updateUser);
+  updateUser
+);
+UsersRoutes.patch(
+  '/',
+  handleFollow
+);
 
 module.exports = UsersRoutes;

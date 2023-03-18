@@ -6,7 +6,7 @@ const getAllFeaturedTests = async (req, res, next) => {
   try {
     const numTests = await FeaturedTest.countDocuments();
     let title = req.query.title
-      ? req.query.title
+      ? { $regex: req.query.title, $options: 'i' }
       : { $regex: '', $options: 'i' };
     let page =
         req.query.page && !isNaN(parseInt(req.query.page))
