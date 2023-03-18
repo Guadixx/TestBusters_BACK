@@ -6,7 +6,7 @@ const RecordSchema = mongoose.Schema(
     score: { type: String, trim: true }, //FORMATO PUNTOS/PUNTOS POSIBLES/TIEMPO
     last_score: { type: String, trim: true },
     rating: { type: Number, default: 0}, //SI NO ESTÁ PUNTUADO ES -1
-    model_type: {  type: String, enum: ['FeaturedTest', 'GenericTest' ], required: true}       //DESDE EL CONTROLADOR DE ACABAR TESTS   POSIBILIDAD DE NO DEJAR PUNTUAR HASTA QUE NO SE COMPLETA AL MENOS UNA VEZ
+    model_type: {  type: String, enum: ['FeaturedTest', 'GenericTest' ], required: true}       //DESDE EL CONTROLADOR DE ACABAR TEST   POSIBILIDAD DE NO DEJAR PUNTUAR HASTA QUE NO SE COMPLETA AL MENOS UNA VEZ
   },
   {
     timestamps: {
