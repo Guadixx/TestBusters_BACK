@@ -86,6 +86,13 @@ const getUserById = async (req, res, next) => {
         );
       }
     }
+    let sumRecords = 0;
+    for (const record of userToCheck.records) {
+      const recordToFindAverage = await Record.findById(record);
+      const recordList = recordToFindAverage.score.split('/');
+      sumRecords += (recordList[0] / recordList[1]) * 100;
+    }
+    const average = sumRecords / userToCheck.records.length;
     const user = await User.findById(id).populate([
       'favourite_featuredTests',
       'created_featuredTests',
@@ -100,7 +107,7 @@ const getUserById = async (req, res, next) => {
       'following_users',
       'achievements',
     ]);
-    return res.status(200).json(user);
+    return res.status(200).json({ average: average, user: user });
   } catch (error) {
     return next(error);
   }

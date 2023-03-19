@@ -137,6 +137,13 @@ const deleteGenericTest = async (req, res, next) => {
 const updateGenericTest = async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (req.body.comments_enabled==false){
+      const testToDeleteComments = await GenericTest.findById(id)
+      for (const comment of testToDeleteComments) {
+        await Comment.findByIdAndDelete(comment)
+      }
+      req.body.comments=[]
+    }
     if (req.files) {
       const genericTest = await GenericTest.findById(id);
       req.body.user = genericTest.user;

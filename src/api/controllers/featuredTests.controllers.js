@@ -137,6 +137,13 @@ const deleteFeaturedTest = async (req, res, next) => {
 const updateFeatureTest = async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (req.body.comments_enabled==false){
+      const testToDeleteComments = await FeaturedTest.findById(id)
+      for (const comment of testToDeleteComments) {
+        await Comment.findByIdAndDelete(comment)
+      }
+      req.body.comments=[]
+    }
     if (req.files) {
       const featureTest = await FeaturedTest.findById(id);
       req.body.user = featureTest.user;

@@ -67,6 +67,6 @@
 //USERS       
     //
     //DELETE      DELETE RECORDS Y CREATED TESTS ---                                                DONE*****************************
-    //GET ALL ->  FILTER BY NAME Y PAGINACIÓN
+    //GET ALL ->  FILTER BY NAME Y PAGINACIÓN                                                       DONE*****************************
     //PUT DE LEVEL Y NEXT_LEVEL                                                                     ----CONTROLADOR END TEST----
     //TEST_PLAYED Y ACHIEVEMENTS AL FINALIZAR TEST                                                  ----CONTROLADOR END TEST----
