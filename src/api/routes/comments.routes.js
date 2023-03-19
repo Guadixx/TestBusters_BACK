@@ -14,7 +14,7 @@ CommentsRoutes.get('/', getAllComments);
 CommentsRoutes.get('/:id', getCommentById);
 CommentsRoutes.post('/', createComment);
 CommentsRoutes.put('/reactions/:id', handleReactions);
-CommentsRoutes.put('/:id', deleteComment);
+CommentsRoutes.put('/:id', updateComment);
 CommentsRoutes.delete('/:id', deleteComment);
 
 module.exports = CommentsRoutes;
