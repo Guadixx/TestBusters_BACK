@@ -195,6 +195,57 @@ const ultimateController = async (req, res, next) => {
           { newBodyTest },
           { new: true }
         );
+    const level = user.level;
+    let next_level = user.next_level;
+    level[1] = level[1] + score.split('/')[0];
+    while (level[1] >= next_level) {
+      level[0]++;
+      next_level = level[0] * (20 * level[0]) + 100;     //actualizamos el nivel del usuario en funcion a las preguntas
+    }
+    const achievements = [];  //declaramos la lista de logros vacia
+    const levelAchievements = await Achievement.find({
+      type: 'level',
+      verification: { $lte: level },
+    });
+    for (const achievement of levelAchievements) {
+      achievements.push(achievement._id);
+    }     //encontramos los logros por nivel inferiores o iguales al nivel del usuario y los metemos en la lista
+    const created =
+      user.created_featuredTests.length + user.created_genericTests.length;
+    const createdTestsAchievements = await Achievement.find({
+      type: 'created',
+      verification: { $lte: created },
+    });
+    for (const achievement of createdTestsAchievements) {
+      achievements.push(achievement._id);
+    }    //encontramos los logros por nivel inferiores o iguales al numero de tests creados por el usuario y los metemos en la lista
+    const playedTestsAchievements = await Achievement.find({
+      type: 'played',
+      verification: { $lte: user.tests_played },
+    });
+    for (const achievement of playedTestsAchievements) {
+      achievements.push(achievement._id);
+    }     //encontramos los logros por nivel inferiores o iguales al numero de tests completados por el usuario y los metemos en la lista
+    const numberAchievements = await Achievement.countDocuments({
+      type: 'achievement',
+      verification: { $lte: achievements.length },
+    });   //contamos el numero de logros por logro que le corresponderían para los tres casos anteriores
+    const totalLength = achievements.length + numberAchievements.length
+    const totalAchievements = await Achievement.find({
+        type: 'achievement',
+        verification: { $lte: totalLength },
+      });
+      for (const achievement of totalAchievements) {
+        achievements.push(achievement._id);
+      }   ////encontramos los logros por logro que le corresponden para el total incluyendo a ellos mismos los metemos en la lista
+
+    await User.findByIdAndUpdate(id,{
+        level: level,
+        next_level: next_level,
+        tests_played: tests_played,
+        achievements: achievements
+    },{new:true})
+    return res.status(200).json('test finalizado')
   } catch (error) {
     next(error);
   }
