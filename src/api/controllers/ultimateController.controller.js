@@ -41,9 +41,9 @@ const ultimateController = async (req, res, next) => {
         userRating = record.rating; //conseguimos la puntuacion del test -> -1 no está puntuado
       }
     }
-    const first = await Leaderboard.findById(test.first); //encontramos el leaderboard del test
-    const second = await Leaderboard.findById(test.second);
-    const third = await Leaderboard.findById(test.third);
+    const first = await Leaderboard.findById(test.first[0]); //encontramos el leaderboard del test
+    const second = await Leaderboard.findById(test.second[0]);
+    const third = await Leaderboard.findById(test.third[0]);
     //********************TEST.TIMES_PLAYED
     const times_played = test.times_played + 1; //sumamos uno al numero de veces jugadas del test
     //********************USER.TESTS_PLAYED
@@ -88,7 +88,7 @@ const ultimateController = async (req, res, next) => {
           ? oldRating //se mantiene como estaba
           : [oldRating[0] + rating, oldRating[1] + 1]; //si ha votado y no habia votado le sumamos la votacion y un voto
       await Record.findByIdAndUpdate(
-        recordId,
+        recordIdToUpdate,
         { score: newScore, last_score: score, rating: newRecordRating },
         { new: true }
       ); //actualizamos el record
@@ -120,92 +120,115 @@ const ultimateController = async (req, res, next) => {
       ); //pusheamos el nuevo record al user
     }
     //comparamos los leaderboard
+    let newFirst = '';
+    let newSecond = '';
+    let newThird = '';
     const scoreUser = parseInt(score.split('/')[0]);
-    const scoreFirst = parseInt(first.score.split('/')[0]);
-    const scoreSecond = parseInt(second.score.split('/')[0]);
-    const scoreThird = parseInt(third.score.split('/')[0]);
-    const firstTime =
-      parseInt(first.score.split('/')[2].split(':')[0]) * 60 +
-      parseInt(first.score.split(':')[1]); //el tiempo usado en segundos
-    const secondTime =
-      parseInt(second.score.split('/')[2].split(':')[0]) * 60 +
-      parseInt(second.score.split(':')[1]); //el tiempo usado en segundos
-    const thirdTime =
-      parseInt(third.score.split('/')[2].split(':')[0]) * 60 +
-      parseInt(third.score.split(':')[1]); //el tiempo usado en segundos
-    let result = 'loser';
-    let newFirst = first._id;
-    let newSecond = second._id;
-    let newThird = third._id;
-    if (scoreUser > scoreThird) {
-      result = 'third';
-    }
-    if (scoreUser == scoreThird && userTime < thirdTime) {
-      result = 'third';
-    }
-    if (scoreUser > scoreSecond) {
-      result = 'second';
-    }
-    if (scoreUser == scoreSecond && userTime < secondTime) {
-      result = 'second';
-    }
-    if (scoreUser > scoreFirst) {
-      result = 'first';
-    }
-    if (scoreUser == scoreFirst && userTime < firstTime) {
-      result = 'first';
-    }
-    if (result != 'loser') {
-      await Leaderboard.findByIdAndDelete(newThird);
+    if (first != null) {
+      const scoreFirst = parseInt(first.score.split('/')[0]);
+      const scoreSecond =
+        second != null ? parseInt(second.score.split('/')[0]) : 0;
+      const scoreThird =
+        third != null ? parseInt(third.score.split('/')[0]) : 0;
+      const firstTime =
+        parseInt(first.score.split('/')[2].split(':')[0]) * 60 +
+        parseInt(first.score.split(':')[1]); //el tiempo usado en segundos
+      const secondTime =
+        second != null
+          ? parseInt(second.score.split('/')[2].split(':')[0]) * 60 +
+            parseInt(second.score.split(':')[1])
+          : 1000000; //el tiempo usado en segundos
+      const thirdTime =
+        third != null
+          ? parseInt(third.score.split('/')[2].split(':')[0]) * 60 +
+            parseInt(third.score.split(':')[1])
+          : 1000000; //el tiempo usado en segundos
+      let result = 'loser';
+      newFirst = first._id;
+      if (second != null) {
+        newSecond = second._id;
+      }
+      if (third != null) {
+        newThird = third._id;
+      }
+      if (scoreUser > scoreThird) {
+        result = 'third';
+      }
+      if (scoreUser == scoreThird && userTime < thirdTime) {
+        result = 'third';
+      }
+      if (scoreUser > scoreSecond) {
+        result = 'second';
+      }
+      if (scoreUser == scoreSecond && userTime < secondTime) {
+        result = 'second';
+      }
+      if (scoreUser > scoreFirst) {
+        result = 'first';
+      }
+      if (scoreUser == scoreFirst && userTime < firstTime) {
+        result = 'first';
+      }
+      if (result != 'loser') {
+        if (newThird != '') {
+          await Leaderboard.findByIdAndDelete(newThird);
+        }
+        const newLeaderboard = await new Leaderboard({
+          user: userId,
+          backup_name: user.username,
+          score: score,
+        });
+        await newLeaderboard.save();
+        if (result == 'first') {
+          newFirst = newLeaderboard._id;
+          newSecond = newFirst;
+          newThird = newSecond;
+        }
+        if (result == 'second') {
+          newSecond = newLeaderboard._id;
+          newThird = newSecond;
+        }
+        if (result == 'third') {
+          newThird = newLeaderboard._id;
+        }
+      }
+    } else {
       const newLeaderboard = await new Leaderboard({
         user: userId,
         backup_name: user.username,
         score: score,
       });
       await newLeaderboard.save();
-      if (result == 'first') {
-        newFirst = newLeaderboard._id;
-        newSecond = newFirst;
-        newThird = newSecond;
-      }
-      if (result == 'second') {
-        newSecond = newLeaderboard._id;
-        newThird = newSecond;
-      }
-      if (result == 'third') {
-        newThird = newLeaderboard._id;
-      }
+      newFirst = newLeaderboard._id;
     }
     const newBodyTest = {
       times_played: times_played,
       rating: newTestRating,
       average: average,
-      first: newFirst,
-      second: newSecond,
-      third: newThird,
-    };
+      first: [newFirst],
+    };   //SECOND Y THIRD
     testType == 'FeaturedTest'
       ? await FeaturedTest.findByIdAndUpdate(
           testId,
-          { newBodyTest },
+           newBodyTest ,
           { new: true }
         )
       : await GenericTest.findByIdAndUpdate(
           testId,
-          { newBodyTest },
+           newBodyTest ,
           { new: true }
         );
     const level = user.level;
     let next_level = user.next_level;
-    level[1] = level[1] + score.split('/')[0];
+    level[1] = parseInt(level[1] + score.split('/')[0]);
     while (level[1] >= next_level) {
       level[0]++;
       next_level = level[0] * (20 * level[0]) + 100; //actualizamos el nivel del usuario en funcion a las preguntas
     }
-    const achievements = []; //declaramos la lista de logros vacia
+    /* const achievements = []; //declaramos la lista de logros vacia
     const levelAchievements = await Achievement.find({
       type: 'level',
-      verification: { $lte: level },
+      verification: { $lte: parseInt(level[0]) },
     });
     for (const achievement of levelAchievements) {
       achievements.push(achievement._id);
@@ -214,23 +237,23 @@ const ultimateController = async (req, res, next) => {
       user.created_featuredTests.length + user.created_genericTests.length;
     const createdTestsAchievements = await Achievement.find({
       type: 'created',
-      verification: { $lte: created },
+      verification: { $lte: parseInt(created) },
     });
     for (const achievement of createdTestsAchievements) {
       achievements.push(achievement._id);
     } //encontramos los logros por nivel inferiores o iguales al numero de tests creados por el usuario y los metemos en la lista
     const playedTestsAchievements = await Achievement.find({
       type: 'played',
-      verification: { $lte: user.tests_played },
+      verification: { $lte: parseInt(user.tests_played) },
     });
     for (const achievement of playedTestsAchievements) {
       achievements.push(achievement._id);
     } //encontramos los logros por nivel inferiores o iguales al numero de tests completados por el usuario y los metemos en la lista
     const numberAchievements = await Achievement.countDocuments({
       type: 'achievement',
-      verification: { $lte: achievements.length },
+      verification: { $lte: parseInt(achievements.length) },
     }); //contamos el numero de logros por logro que le corresponderían para los tres casos anteriores
-    const totalLength = achievements.length + numberAchievements.length;
+    const totalLength = parseInt(achievements.length + numberAchievements.length);
     const totalAchievements = await Achievement.find({
       type: 'achievement',
       verification: { $lte: totalLength },
@@ -238,14 +261,14 @@ const ultimateController = async (req, res, next) => {
     for (const achievement of totalAchievements) {
       achievements.push(achievement._id);
     } ////encontramos los logros por logro que le corresponden para el total incluyendo a ellos mismos los metemos en la lista
-
+ */
     await User.findByIdAndUpdate(
-      id,
+      userId,
       {
         level: level,
         next_level: next_level,
         tests_played: tests_played,
-        achievements: achievements,
+        achievements: [],
       },
       { new: true }
     );

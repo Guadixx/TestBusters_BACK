@@ -1,5 +1,6 @@
 const GenericTest = require('../models/genericTest.model');
 const Comment = require('../models/comment.model');
+const User = require('../models/user.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 const getAllGenericTests = async (req, res, next) => {
   try {
@@ -106,6 +107,11 @@ const createGenericTest = async (req, res, next) => {
         : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975927/testbuster/Hero-Banner-Placeholder-Light-2500x1172-1_h7azr9.png',
     });
     const createdGenericTest = await newGenericTest.save();
+    await User.findByIdAndUpdate(
+      req.body.creator,
+      { $push: { created_genericTests: newGenericTest._id } },
+      { new: true }
+    );
     return res.status(201).json(createdGenericTest);
   } catch (error) {
     return next(error);
@@ -114,6 +120,7 @@ const createGenericTest = async (req, res, next) => {
 const deleteGenericTest = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const test = await GenericTest.findById(id);
     const deletedGenericTest = await GenericTest.findByIdAndDelete(id);
     if (
       deletedGenericTest.thumbnail &&
@@ -129,6 +136,11 @@ const deleteGenericTest = async (req, res, next) => {
     ) {
       deleteImgCloudinary(deletedGenericTest.banner);
     }
+    await User.findByIdAndUpdate(
+      test.creator,
+      { $pull: { created_genericTests: id } },
+      { new: true }
+    );
     return res.status(200).json(deletedGenericTest);
   } catch (error) {
     return next(error);
@@ -137,12 +149,12 @@ const deleteGenericTest = async (req, res, next) => {
 const updateGenericTest = async (req, res, next) => {
   try {
     const { id } = req.params;
-    if (req.body.comments_enabled==false){
-      const testToDeleteComments = await GenericTest.findById(id)
+    if (req.body.comments_enabled == false) {
+      const testToDeleteComments = await GenericTest.findById(id);
       for (const comment of testToDeleteComments) {
-        await Comment.findByIdAndDelete(comment)
+        await Comment.findByIdAndDelete(comment);
       }
-      req.body.comments=[]
+      req.body.comments = [];
     }
     if (req.files) {
       const genericTest = await GenericTest.findById(id);

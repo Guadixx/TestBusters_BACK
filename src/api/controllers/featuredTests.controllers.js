@@ -1,5 +1,6 @@
 const FeaturedTest = require('../models/featuredTest.model');
 const Comment = require('../models/comment.model');
+const User = require('../models/user.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllFeaturedTests = async (req, res, next) => {
@@ -106,6 +107,11 @@ const createFeaturedTest = async (req, res, next) => {
         : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975927/testbuster/Hero-Banner-Placeholder-Light-2500x1172-1_h7azr9.png',
     });
     const createdFeaturedTest = await newFeaturedTest.save();
+    await User.findByIdAndUpdate(
+      req.body.creator,
+      { $push: { created_featuredTests: newFeaturedTest._id } },
+      { new: true }
+    );
     return res.status(201).json(createdFeaturedTest);
   } catch (error) {
     return next(error);
@@ -114,6 +120,7 @@ const createFeaturedTest = async (req, res, next) => {
 const deleteFeaturedTest = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const test = await FeaturedTest.findById(id);
     const deletedFeaturedTest = await FeaturedTest.findByIdAndDelete(id);
     if (
       deletedFeaturedTest.thumbnail &&
@@ -129,6 +136,11 @@ const deleteFeaturedTest = async (req, res, next) => {
     ) {
       deleteImgCloudinary(deletedFeaturedTest.banner);
     }
+    await User.findByIdAndUpdate(
+      test.creator,
+      { $pull: { created_featuredTests: id } },
+      { new: true }
+    );
     return res.status(200).json(deletedFeaturedTest);
   } catch (error) {
     return next(error);
@@ -137,12 +149,12 @@ const deleteFeaturedTest = async (req, res, next) => {
 const updateFeatureTest = async (req, res, next) => {
   try {
     const { id } = req.params;
-    if (req.body.comments_enabled==false){
-      const testToDeleteComments = await FeaturedTest.findById(id)
+    if (req.body.comments_enabled == false) {
+      const testToDeleteComments = await FeaturedTest.findById(id);
       for (const comment of testToDeleteComments) {
-        await Comment.findByIdAndDelete(comment)
+        await Comment.findByIdAndDelete(comment);
       }
-      req.body.comments=[]
+      req.body.comments = [];
     }
     if (req.files) {
       const featureTest = await FeaturedTest.findById(id);
