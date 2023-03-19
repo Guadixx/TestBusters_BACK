@@ -141,6 +141,18 @@ const deleteFeaturedTest = async (req, res, next) => {
       { $pull: { created_featuredTests: id } },
       { new: true }
     );
+    if (test.first.length != 0) {
+      await Leaderboard.findByIdAndDelete(test.first[0]);
+    }
+    if (test.first.length != 0) {
+      await Leaderboard.findByIdAndDelete(test.second[0]);
+    }
+    if (test.first.length != 0) {
+      await Leaderboard.findByIdAndDelete(test.third[0]);
+    }
+    for (const commentId of test.comments) {
+      await Comment.findByIdAndDelete(commentId);
+    }
     return res.status(200).json(deletedFeaturedTest);
   } catch (error) {
     return next(error);

@@ -3,6 +3,8 @@ const Comment = require('../models/comment.model');
 const FeaturedTest = require('../models/featuredTest.model');
 const GenericTest = require('../models/genericTest.model');
 const Record = require('../models/record.model');
+const Leaderboard = require('../models/leaderboard.model')
+const Data = require('../models/data.model')
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllUsers = async (req, res, next) => {
@@ -87,12 +89,12 @@ const getUserById = async (req, res, next) => {
       }
     }
     let sumRecords = 0;
-    for (const record of userToCheck.records) {
+    for (const record of checkFollows.records) {
       const recordToFindAverage = await Record.findById(record);
       const recordList = recordToFindAverage.score.split('/');
       sumRecords += (recordList[0] / recordList[1]) * 100;
     }
-    const average = sumRecords / userToCheck.records.length;
+    const average = sumRecords / checkFollows.records.length;
     const user = await User.findById(id).populate([
       'favourite_featuredTests',
       'created_featuredTests',
@@ -142,13 +144,60 @@ const deleteUser = async (req, res, next) => {
       await Comment.findByIdAndDelete(comment._id);
     }
     for (const created of created_featuredTests) {
+      const test = await FeaturedTest.findById(created)
       await FeaturedTest.findByIdAndDelete(created);
+      for (const commentId of test.comments) {
+        await Comment.findByIdAndDelete(commentId);
+      }
+      if (test.first.length != 0) {
+        await Leaderboard.findByIdAndDelete(test.first[0]);
+      }
+      if (test.first.length != 0) {
+        await Leaderboard.findByIdAndDelete(test.second[0]);
+      }
+      if (test.first.length != 0) {
+        await Leaderboard.findByIdAndDelete(test.third[0]);
+      }
     }
     for (const created of created_genericTests) {
+      const test = await GenericTest.findById(created)
+      if (test.first.length != 0) {
+        await Leaderboard.findByIdAndDelete(test.first[0]);
+      }
+      if (test.first.length != 0) {
+        await Leaderboard.findByIdAndDelete(test.second[0]);
+      }
+      if (test.first.length != 0) {
+        await Leaderboard.findByIdAndDelete(test.third[0]);
+      }
       await GenericTest.findByIdAndDelete(created);
+      for (const dataId of test.data) {
+        const deletedData = await Data.findByIdAndDelete(dataId);
+        if (deletedData.question_img) {
+          deleteImgCloudinary(deletedData.question_img);
+        }
+        if (deletedData.answer) {
+          deleteImgCloudinary(deletedData.answer);
+        }
+        if (deletedData.option_1) {
+          deleteImgCloudinary(deletedData.option_1);
+        }
+        if (deletedData.option_2) {
+          deleteImgCloudinary(deletedData.option_2);
+        }
+        if (deletedData.option_3) {
+          deleteImgCloudinary(deletedData.option_3);
+        }
+        if (deletedData.option_4) {
+          deleteImgCloudinary(deletedData.option_4);
+        }
+        if (deletedData.option_5) {
+          deleteImgCloudinary(deletedData.option_5);
+        }
+      }
     }
-    for (const created of records) {
-      await Record.findByIdAndDelete(created);
+    for (const record of records) {
+      await Record.findByIdAndDelete(record);
     }
     if (
       deletedUser.avatar &&

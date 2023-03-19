@@ -1,6 +1,8 @@
 const GenericTest = require('../models/genericTest.model');
 const Comment = require('../models/comment.model');
 const User = require('../models/user.model');
+const Data = require('../models/data.model');
+const Leaderboard = require('../models/leaderboard.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 const getAllGenericTests = async (req, res, next) => {
   try {
@@ -123,24 +125,60 @@ const deleteGenericTest = async (req, res, next) => {
     const test = await GenericTest.findById(id);
     const deletedGenericTest = await GenericTest.findByIdAndDelete(id);
     if (
-      deletedGenericTest.thumbnail &&
-      deletedGenericTest.thumbnail !=
+      test.thumbnail &&
+      test.thumbnail !=
         'https://res.cloudinary.com/dva9zee9r/image/upload/v1679001055/Pngtree_exam_icon_isolated_on_abstract_5077704_jey1op.png'
     ) {
-      deleteImgCloudinary(deletedGenericTest.thumbnail);
+      deleteImgCloudinary(test.thumbnail);
     }
     if (
-      deletedGenericTest.banner &&
-      deletedGenericTest.banner !=
+      test.banner &&
+      test.banner !=
         'https://res.cloudinary.com/dva9zee9r/image/upload/v1678975927/testbuster/Hero-Banner-Placeholder-Light-2500x1172-1_h7azr9.png'
     ) {
-      deleteImgCloudinary(deletedGenericTest.banner);
+      deleteImgCloudinary(test.banner);
     }
     await User.findByIdAndUpdate(
       test.creator,
       { $pull: { created_genericTests: id } },
       { new: true }
     );
+    for (const commentId of test.comments) {
+      await Comment.findByIdAndDelete(commentId);
+    }
+    for (const dataId of test.data) {
+      const deletedData = await Data.findByIdAndDelete(dataId);
+      if (deletedData.question_img) {
+        deleteImgCloudinary(deletedData.question_img);
+      }
+      if (deletedData.answer) {
+        deleteImgCloudinary(deletedData.answer);
+      }
+      if (deletedData.option_1) {
+        deleteImgCloudinary(deletedData.option_1);
+      }
+      if (deletedData.option_2) {
+        deleteImgCloudinary(deletedData.option_2);
+      }
+      if (deletedData.option_3) {
+        deleteImgCloudinary(deletedData.option_3);
+      }
+      if (deletedData.option_4) {
+        deleteImgCloudinary(deletedData.option_4);
+      }
+      if (deletedData.option_5) {
+        deleteImgCloudinary(deletedData.option_5);
+      }
+    }
+    if (test.first.length != 0) {
+      await Leaderboard.findByIdAndDelete(test.first[0]);
+    }
+    if (test.first.length != 0) {
+      await Leaderboard.findByIdAndDelete(test.second[0]);
+    }
+    if (test.first.length != 0) {
+      await Leaderboard.findByIdAndDelete(test.third[0]);
+    }
     return res.status(200).json(deletedGenericTest);
   } catch (error) {
     return next(error);
