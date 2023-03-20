@@ -1,5 +1,6 @@
 const express = require('express');
 const RecordsRoutes = express.Router();
+const auth = require('../../middlewares/auth.middleware');
 
 const {
   getAllRecords,
@@ -9,10 +10,10 @@ const {
   updateRecord,
 } = require('../controllers/records.controllers');
 
-RecordsRoutes.get('/', getAllRecords);
-RecordsRoutes.get('/:id', getRecordById);
-RecordsRoutes.post('/', createRecord);
-RecordsRoutes.delete('/:id', deleteRecord);
-RecordsRoutes.put('/:id', updateRecord);
+RecordsRoutes.get('/', [auth],getAllRecords);
+RecordsRoutes.get('/:id', [auth],getRecordById);
+RecordsRoutes.post('/', [auth],createRecord);
+RecordsRoutes.delete('/:id', [auth],deleteRecord);
+RecordsRoutes.put('/:id', [auth],updateRecord);
 
 module.exports = RecordsRoutes;

@@ -1,5 +1,6 @@
 const express = require('express');
 const { upload } = require('../../middlewares/files.middleware');
+const auth = require('../../middlewares/auth.middleware');
 const CountriesRoutes = express.Router();
 
 const {
@@ -10,10 +11,10 @@ const {
   deleteCountry,
 } = require('../controllers/countries.controllers');
 
-CountriesRoutes.get('/', getAllCountries);
-CountriesRoutes.post('/', upload.single('flag'), createCountry);
-CountriesRoutes.delete('/:id', deleteCountry);
-CountriesRoutes.put('/:id', updateCountry);
-CountriesRoutes.put('/flag/:id', upload.single('flag'), putImage);
+CountriesRoutes.get('/', [auth], getAllCountries);
+CountriesRoutes.post('/', [auth], upload.single('flag'), createCountry);
+CountriesRoutes.delete('/:id', [auth], deleteCountry);
+CountriesRoutes.put('/:id', [auth], updateCountry);
+CountriesRoutes.put('/flag/:id', [auth],  upload.single('flag'), putImage);
 
 module.exports = CountriesRoutes;

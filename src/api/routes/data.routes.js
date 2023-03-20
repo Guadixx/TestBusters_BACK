@@ -1,5 +1,6 @@
 const express = require('express');
 const { upload } = require('../../middlewares/files.middleware');
+const auth = require('../../middlewares/auth.middleware');
 const DataRoutes = express.Router();
 
 const {
@@ -10,10 +11,10 @@ const {
   updateData,
 } = require('../controllers/data.controllers');
 
-DataRoutes.get('/', getAllData);
-DataRoutes.get('/:id', getDataById);
+DataRoutes.get('/', [auth],getAllData);
+DataRoutes.get('/:id', [auth],getDataById);
 DataRoutes.post(
-  '/',
+  '/', [auth],
   upload.fields([
     { name: 'question_img', maxCount: 100 },
     { name: 'answer', maxCount: 100 },
@@ -25,9 +26,9 @@ DataRoutes.post(
   ]),
   createData
 );
-DataRoutes.delete('/:id', deleteData),
+DataRoutes.delete('/:id', [auth],deleteData),
 DataRoutes.put(
-  '/:id',
+  '/:id', [auth],
   upload.fields([
     { name: 'question_img', maxCount: 1 },
     { name: 'answer', maxCount: 1 },

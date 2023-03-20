@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-//const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const validator = require('validator');
 const UserSchema = mongoose.Schema(
   {
@@ -19,19 +19,19 @@ const UserSchema = mongoose.Schema(
       validate: [validator.isStrongPassword, 'Password not valid'],
     },
     favourite_featuredTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest' }],      //EN EL CONTROLADOR DE FAVORITOS DEL TEST
-    favourite_genericTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest'  }],
-    created_featuredTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest'  }],          //EN EL CREATE DE CADA TEST
-    created_genericTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest'  }],
+    favourite_genericTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest' }],
+    created_featuredTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeaturedTest' }],          //EN EL CREATE DE CADA TEST
+    created_genericTests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GenericTest' }],
     records: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Record' }],                              //EN EL CONTROLADOR DE ACABAR EL TEST JUNTO CON LEVEL NEXT Y PLAYED
     followed_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],                    //OTRO CONTROLADOR PARA FOLLOWED Y FOLLOWING DEL MISMO ROLLO QUE EL DE LOS ME GUSTA
     following_users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     avatar: { type: String },
     bio: { type: String, trim: true },
     banner: { type: String },
-    level: { type: Array, default: [0, 0] },                                                 
+    level: { type: Array, default: [0, 0] },
     next_level: { type: Number, default: 100 },
     tests_played: { type: Number, default: 0 },
-    achievements: [    
+    achievements: [
       { type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' },                              //ACHIEVEMENTES AL ACABAR TEST, AL CREAR Y EN AMBOS COMPROBAR EL NUMERO DE LOGROS
     ],
   },
@@ -42,9 +42,13 @@ const UserSchema = mongoose.Schema(
     },
   }
 );
-/* UserSchema.pre('save', function (next) {
-  this.password = bcrypt.hashSync(this.password, 10);
-  next();
-}); */
+UserSchema.pre('save', function (next) {
+  try {
+    this.password = bcrypt.hashSync(this.password, 10);
+    next();
+  } catch (error) {
+    next("Error hashing password", error);
+  }
+});
 const User = mongoose.model('User', UserSchema);
 module.exports = User;

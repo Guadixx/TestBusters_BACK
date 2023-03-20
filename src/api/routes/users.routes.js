@@ -1,5 +1,6 @@
 const express = require('express');
 const { upload } = require('../../middlewares/files.middleware');
+const auth = require('../../middlewares/auth.middleware');
 const UsersRoutes = express.Router();
 
 const {
@@ -9,6 +10,7 @@ const {
   deleteUser,
   updateUser,
   handleFollow,
+  loginUser,
 } = require('../controllers/users.controllers');
 
 UsersRoutes.get('/', getAllUsers);
@@ -21,9 +23,9 @@ UsersRoutes.post(
   ]),
   registerUser
 );
-UsersRoutes.delete('/:id', deleteUser);
+UsersRoutes.delete('/:id', [auth], deleteUser);
 UsersRoutes.put(
-  '/:id',
+  '/:id', [auth],
   upload.fields([
     { name: 'avatar', maxCount: 1 },
     { name: 'banner', maxCount: 1 },
@@ -34,5 +36,6 @@ UsersRoutes.patch(
   '/',
   handleFollow
 );
+UsersRoutes.post("/login", loginUser);
 
 module.exports = UsersRoutes;

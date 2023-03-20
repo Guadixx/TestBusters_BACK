@@ -6,6 +6,9 @@ const Record = require('../models/record.model');
 const Leaderboard = require('../models/leaderboard.model');
 const Data = require('../models/data.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
+const bcrypt = require("bcrypt");
+const { createToken } = require('../../utils/token');
+const setError = require('../../utils/error');
 
 const getAllUsers = async (req, res, next) => {
   try {
@@ -14,9 +17,9 @@ const getAllUsers = async (req, res, next) => {
       ? { $regex: req.query.username, $options: 'i' }
       : { $regex: '', $options: 'i' };
     let page =
-        req.query.page && !isNaN(parseInt(req.query.page))
-          ? parseInt(req.query.page)
-          : 1,
+      req.query.page && !isNaN(parseInt(req.query.page))
+        ? parseInt(req.query.page)
+        : 1,
       limit =
         req.query.limit && !isNaN(parseInt(req.query.limit))
           ? parseInt(req.query.limit)
@@ -97,13 +100,14 @@ const getUserById = async (req, res, next) => {
             recordToFindAverage.model_type == 'GenericTest'
               ? await GenericTest.findById(recordToFindAverage.test)
               : await FeaturedTest.findById(recordToFindAverage.test);
-        
-        if (testRecord == null) {
-          await Record.findByIdAndDelete(record);
-        } else {
-          const recordList = recordToFindAverage.score.split('/');
-          sumRecords += (recordList[0] / recordList[1]) * 100;
-        }}
+
+          if (testRecord == null) {
+            await Record.findByIdAndDelete(record);
+          } else {
+            const recordList = recordToFindAverage.score.split('/');
+            sumRecords += (recordList[0] / recordList[1]) * 100;
+          }
+        }
       }
     }
     const average = sumRecords / checkFollows.records.length;
@@ -214,14 +218,14 @@ const deleteUser = async (req, res, next) => {
     if (
       deletedUser.avatar &&
       deletedUser.avatar !=
-        'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/user-dummy-p4ao7p3l9bvrme1wyabiin2vr079ietul8qza7zw2w_dl4uos.png'
+      'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/user-dummy-p4ao7p3l9bvrme1wyabiin2vr079ietul8qza7zw2w_dl4uos.png'
     ) {
       deleteImgCloudinary(deletedUser.avatar);
     }
     if (
       deletedUser.banner &&
       deletedUser.banner !=
-        'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png'
+      'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png'
     ) {
       deleteImgCloudinary(deletedUser.banner);
     }
@@ -274,20 +278,39 @@ const handleFollow = async (req, res, next) => {
     const followedUser = await User.findById(followedUserId);
     followedUser.followed_users.includes(followingUserId)
       ? await User.findByIdAndUpdate(
-          followedUser,
-          { $pull: { followed_users: followingUserId } },
-          { new: true }
-        )
+        followedUser,
+        { $pull: { followed_users: followingUserId } },
+        { new: true }
+      )
       : await User.findByIdAndUpdate(
-          followedUser,
-          { $push: { followed_users: followingUserId } },
-          { new: true }
-        );
+        followedUser,
+        { $push: { followed_users: followingUserId } },
+        { new: true }
+      );
     return res.status(200).json('follow');
   } catch (error) {
     next(error);
   }
 };
+const loginUser = async (req, res, next) => {
+  try {
+    const userInDB = await User.findOne({ username: req.body.username });
+    if (!userInDB) {
+      return next(setError(404, "User not found"));
+    }
+    if (bcrypt.compareSync(req.body.password, userInDB.password)) {
+      const token = createToken(userInDB._id, userInDB.username);
+      userInDB.password = null;
+      return res.status(200).json({
+        userInDB,
+        token,
+      });
+    }
+  } catch (error) {
+    return next(setError(500, error.message || "Failed authenticating User"));
+  }
+};
+
 module.exports = {
   getAllUsers,
   registerUser,
@@ -295,4 +318,5 @@ module.exports = {
   deleteUser,
   updateUser,
   handleFollow,
+  loginUser,
 };
