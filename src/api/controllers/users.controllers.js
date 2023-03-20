@@ -277,15 +277,27 @@ const handleFollow = async (req, res, next) => {
     const { followedUserId } = req.body;
     const { followingUserId } = req.body;
     const followedUser = await User.findById(followedUserId);
+    const followingUser = await User.findById(followingUserId);
     followedUser.followed_users.includes(followingUserId)
       ? await User.findByIdAndUpdate(
-        followedUser,
+        followedUserId,
         { $pull: { followed_users: followingUserId } },
         { new: true }
       )
       : await User.findByIdAndUpdate(
-        followedUser,
+        followedUserId,
         { $push: { followed_users: followingUserId } },
+        { new: true }
+      );
+      followedUser.followed_users.includes(followingUserId)
+      ? await User.findByIdAndUpdate(
+        followingUserId,
+        { $pull: { following_users: followedUserId } },
+        { new: true }
+      )
+      : await User.findByIdAndUpdate(
+        followingUserId,
+        { $push: { following_users: followedUserId } },
         { new: true }
       );
     return res.status(200).json('follow');
