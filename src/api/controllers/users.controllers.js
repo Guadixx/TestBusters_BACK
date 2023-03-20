@@ -3,8 +3,8 @@ const Comment = require('../models/comment.model');
 const FeaturedTest = require('../models/featuredTest.model');
 const GenericTest = require('../models/genericTest.model');
 const Record = require('../models/record.model');
-const Leaderboard = require('../models/leaderboard.model')
-const Data = require('../models/data.model')
+const Leaderboard = require('../models/leaderboard.model');
+const Data = require('../models/data.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllUsers = async (req, res, next) => {
@@ -89,10 +89,22 @@ const getUserById = async (req, res, next) => {
       }
     }
     let sumRecords = 0;
-    for (const record of checkFollows.records) {
-      const recordToFindAverage = await Record.findById(record);
-      const recordList = recordToFindAverage.score.split('/');
-      sumRecords += (recordList[0] / recordList[1]) * 100;
+    if (checkFollows.records.length != 0) {
+      for (const record of checkFollows.records) {
+        const recordToFindAverage = await Record.findById(record);
+        if (recordToFindAverage != null) {
+          const testRecord =
+            recordToFindAverage.model_type == 'GenericTest'
+              ? await GenericTest.findById(recordToFindAverage.test)
+              : await FeaturedTest.findById(recordToFindAverage.test);
+        
+        if (testRecord == null) {
+          await Record.findByIdAndDelete(record);
+        } else {
+          const recordList = recordToFindAverage.score.split('/');
+          sumRecords += (recordList[0] / recordList[1]) * 100;
+        }}
+      }
     }
     const average = sumRecords / checkFollows.records.length;
     const user = await User.findById(id).populate([
@@ -144,7 +156,7 @@ const deleteUser = async (req, res, next) => {
       await Comment.findByIdAndDelete(comment._id);
     }
     for (const created of created_featuredTests) {
-      const test = await FeaturedTest.findById(created)
+      const test = await FeaturedTest.findById(created);
       await FeaturedTest.findByIdAndDelete(created);
       for (const commentId of test.comments) {
         await Comment.findByIdAndDelete(commentId);
@@ -160,7 +172,7 @@ const deleteUser = async (req, res, next) => {
       }
     }
     for (const created of created_genericTests) {
-      const test = await GenericTest.findById(created)
+      const test = await GenericTest.findById(created);
       if (test.first.length != 0) {
         await Leaderboard.findByIdAndDelete(test.first[0]);
       }
