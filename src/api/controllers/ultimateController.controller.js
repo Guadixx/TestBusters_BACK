@@ -236,7 +236,7 @@ const ultimateController = async (req, res, next) => {
     level[1] = level[1] + parseInt(score.split('/')[0]);
     while (level[1] >= next_level) {
       level[0]++;
-      next_level = level[0] * (20 * level[0]) + 100; //actualizamos el nivel del usuario en funcion a las preguntas
+      next_level = level[0] * (70 * level[0]) + 100; //actualizamos el nivel del usuario en funcion a las preguntas
     }
     const achievements = []; //declaramos la lista de logros vacia
     const levelAchievements = await Achievement.find({ type: 'level' });
