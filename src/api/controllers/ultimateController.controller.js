@@ -11,8 +11,7 @@ const ultimateController = async (req, res, next) => {
   const { score } = req.body; //220/250/05:10
   const { rating } = req.body; //4
   const { testType } = req.body;
-  const percentage =
-    (parseInt(score.split('/')[0]) / parseInt(score.split('/')[1])) * 100; //la puntuación del usuario en tanto por ciento
+  const pointsUser = parseInt(score.split('/')[0]); //la puntuación del usuario
   const userTime =
     parseInt(score.split('/')[2].split(':')[0]) * 60 +
     parseInt(score.split(':')[1]); //el tiempo usado en segundos
@@ -22,7 +21,13 @@ const ultimateController = async (req, res, next) => {
       testType == 'FeaturedTest'
         ? await FeaturedTest.findById(testId)
         : await GenericTest.findById(testId); //encontramos el test en funcion del modelo
-    const userRecord = [-1, -1]; //declaramos el record en -1 para luego comprobar si ha jugado previamente
+    const testTime =
+      parseInt(test.time.split(':')[0]) * 60 +
+      parseInt(test.time.split(':')[1]);
+    const minutesDif = Math.floor(parseInt(testTime - userTime) / 60);
+    const secondsDif = parseInt(testTime - userTime) - minutesDif * 60;
+    const averageUser = parseFloat(`${pointsUser}.${minutesDif}${secondsDif}`);
+    let userRecord = -1; //declaramos el record en -1 para luego comprobar si ha jugado previamente
     let userRating = -1; //declaramos el user rating
     let record = null;
     let recordIdToUpdate = null;
@@ -31,17 +36,20 @@ const ultimateController = async (req, res, next) => {
       if (record.test == testId) {
         recordIdToUpdate = recordId; //almacenamos la id del record para modificarlo
         //en el caso de que exista uno con la id de este test
-        userRecord[0] =
-          (parseInt(record.score.split('/')[0]) / //formateamos la puntuacion
-            parseInt(record.score.split('/')[1])) *
-          100;
-        userRecord[1] =
+        const userRecordPoints = parseInt(record.score.split('/')[0]); //formateamos la puntuacion
+        const userRecordTime =
           parseInt(record.score.split('/')[2].split(':')[0]) * 60 +
           parseInt(record.score.split(':')[1]); //formateamos el tiempo
+        const minutesDifRecord = Math.floor(parseInt(testTime - userRecordTime) / 60);
+        const secondsDifRecord =
+          parseInt(testTime - userRecordTime) - minutesDifRecord * 60;
+        userRecord = parseFloat(
+          `${userRecordPoints}.${minutesDifRecord}${secondsDifRecord}`
+        );
         userRating = record.rating; //conseguimos la puntuacion del test -> -1 no está puntuado
       }
     }
-
+    //const userRecordaverageUser = parseFloat(`${userRecord[0]}.${test.time.split(':')[0]+test.time.split(':')[1]}`)
     const first = await Leaderboard.findById(test.first[0]); //encontramos el leaderboard del test
     const second = await Leaderboard.findById(test.second[0]);
     const third = await Leaderboard.findById(test.third[0]);
@@ -56,25 +64,21 @@ const ultimateController = async (req, res, next) => {
     let newTestRating = [];
     let betterThanGlobal = 0;
     let betterThanLast = 0;
-    if (userRecord[0] != -1) {
+    if (userRecord != -1) {
       //en el caso de que ya se haya jugado
       //MEJOR QUE EL X% DE LAST
-      average.push(percentage); //introducimos temporalmente la última puntuación
+      average.push(averageUser); //introducimos temporalmente la última puntuación
       average.sort((a, b) => a - b); //ordenamos de menor a mayor
       betterThanLast =
-        (average.slice(0, average.indexOf(percentage)).length /
+        (average.slice(0, average.indexOf(averageUser)).length /
           (average.length - 1)) *
         100; //calculamos el tanto por ciento de puntuaciones menores
-      console.log(average.slice(0, average.indexOf(percentage)));
-      console.log(average.length);
-      console.log(average);
-      console.log(percentage, 'percen');
-      average.splice(average.indexOf(percentage), 1); //sacamos la puntuación que habiamos introducido
+      average.splice(average.indexOf(averageUser), 1); //sacamos la puntuación que habiamos introducido
       //******************TEST.AVERAGE
       let isNewRecord = false; //seteamos newrecord a false
-      if (percentage > userRecord[0]) {
-        average.splice(average.indexOf(userRecord[0]), 1);
-        average.push(percentage); //si la puntuación es mayor a su record la reemplazamos en el array de puntuaciones
+      if (averageUser > userRecord) {
+        average.splice(average.indexOf(userRecord), 1);
+        average.push(averageUser); //si la puntuación es mayor a su record la reemplazamos en el array de puntuaciones
         isNewRecord = true; //en el caso de que sea nuevo record seteamos a true
       }
 
@@ -85,7 +89,7 @@ const ultimateController = async (req, res, next) => {
       //MEJOR QUE EL X% DE GLOBAL
       betterThanGlobal =
         isNewRecord == false
-          ? (average.slice(0, average.indexOf(userRecord[0])).length /
+          ? (average.slice(0, average.indexOf(userRecord)).length /
               (average.length - 1)) *
             100
           : betterThanLast; //una vez redefinido el array de puntuaciones calculamos el % de puntuaciones peores
@@ -104,10 +108,10 @@ const ultimateController = async (req, res, next) => {
     } else {
       //en el caso de que no se haya jugado
       //MEJOR QUE EL X%
-      average.push(percentage); //introducimos la puntuación
+      average.push(averageUser); //introducimos la puntuación
       average.sort((a, b) => a - b); //ordenamos de menor a mayor
       betterThanLast =
-        (average.slice(0, average.indexOf(percentage)).length /
+        (average.slice(0, average.indexOf(averageUser)).length /
           (average.length - 1)) *
         100; //calculamos el tanto por ciento de puntuaciones menores
       betterThanGlobal = betterThanLast; //en este caso ambas son iguales
