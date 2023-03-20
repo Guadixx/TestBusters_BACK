@@ -41,9 +41,8 @@ const createAchievement = async (req, res, next) => {
 const deleteAchievement = async (req, res, next) => {
   try {
     const {userId } = req.body;
-    delete req.body.userId;
     const { id } = req.params;
-    const user = await User.findeById(userId);
+    const user = await User.findById(userId);
     if (user.admin) {
     const deletedAchievement = await Achievement.findByIdAndDelete(id);
     if (deletedAchievement.image) {
