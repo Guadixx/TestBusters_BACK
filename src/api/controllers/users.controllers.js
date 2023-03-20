@@ -309,7 +309,7 @@ const loginUser = async (req, res, next) => {
   try {
     const userInDB = await User.findOne({ username: req.body.username });
     if (!userInDB) {
-      return next(setError(404, "User not found"));
+      return res.status(418).json("User not found");
     }
     if (bcrypt.compareSync(req.body.password, userInDB.password)) {
       const token = createToken(userInDB._id, userInDB.username);
@@ -318,6 +318,8 @@ const loginUser = async (req, res, next) => {
         userInDB,
         token,
       });
+    }else {
+      return res.status(418).json("wrong password");
     }
   } catch (error) {
     return next(setError(500, error.message || "Failed authenticating User"));
@@ -333,3 +335,24 @@ module.exports = {
   handleFollow,
   loginUser,
 };
+/* const checkUser = async (hash, password) => {
+  return await bcrypt.compare(password, hash);
+};
+const login = async (req, res, next) => {
+  try {
+    const userInDB = await User.findOne({ username: req.body.username });
+    if (!userInDB) {
+      return next(setError(404, "User not found"));
+    }
+    if (checkUser) {
+      return res.status(200).json({
+        userInDB,
+        token,
+      });
+    } else {
+      return res.status(418).json("wrong password", err);
+    }
+  } catch (error) {
+    return next(setError(500, error.message || "Failed authenticating User"));
+  }
+}; */
