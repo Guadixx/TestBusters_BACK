@@ -33,22 +33,25 @@ const ultimateController = async (req, res, next) => {
     let recordIdToUpdate = null;
     for (const recordId of user.records) {
       record = await Record.findById(recordId); //recorremos todos los records del usuario
-      if (record!=null){
-      if (record.test == testId) {
-        recordIdToUpdate = recordId; //almacenamos la id del record para modificarlo
-        //en el caso de que exista uno con la id de este test
-        const userRecordPoints = parseInt(record.score.split('/')[0]); //formateamos la puntuacion
-        const userRecordTime =
-          parseInt(record.score.split('/')[2].split(':')[0]) * 60 +
-          parseInt(record.score.split(':')[1]); //formateamos el tiempo
-        const minutesDifRecord = Math.floor(parseInt(testTime - userRecordTime) / 60);
-        const secondsDifRecord =
-          parseInt(testTime - userRecordTime) - minutesDifRecord * 60;
-        userRecord = parseFloat(
-          `${userRecordPoints}.${minutesDifRecord}${secondsDifRecord}`
-        );
-        userRating = record.rating; //conseguimos la puntuacion del test -> -1 no está puntuado
-      }}
+      if (record != null) {
+        if (record.test == testId) {
+          recordIdToUpdate = recordId; //almacenamos la id del record para modificarlo
+          //en el caso de que exista uno con la id de este test
+          const userRecordPoints = parseInt(record.score.split('/')[0]); //formateamos la puntuacion
+          const userRecordTime =
+            parseInt(record.score.split('/')[2].split(':')[0]) * 60 +
+            parseInt(record.score.split(':')[1]); //formateamos el tiempo
+          const minutesDifRecord = Math.floor(
+            parseInt(testTime - userRecordTime) / 60
+          );
+          const secondsDifRecord =
+            parseInt(testTime - userRecordTime) - minutesDifRecord * 60;
+          userRecord = parseFloat(
+            `${userRecordPoints}.${minutesDifRecord}${secondsDifRecord}`
+          );
+          userRating = record.rating; //conseguimos la puntuacion del test -> -1 no está puntuado
+        }
+      }
     }
     //const userRecordaverageUser = parseFloat(`${userRecord[0]}.${test.time.split(':')[0]+test.time.split(':')[1]}`)
     const first = await Leaderboard.findById(test.first[0]); //encontramos el leaderboard del test
