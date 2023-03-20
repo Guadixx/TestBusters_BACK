@@ -1,6 +1,7 @@
 const FeaturedTest = require('../models/featuredTest.model');
 const Comment = require('../models/comment.model');
 const User = require('../models/user.model');
+const Record = require('../models/record.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllFeaturedTests = async (req, res, next) => {
@@ -58,6 +59,7 @@ const getAllFeaturedTests = async (req, res, next) => {
 const getFeaturedTestsById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { userId } = req.body;
     const checkComments = await FeaturedTest.findById(id);
     const comments = [];
     for (const commentId of checkComments.comments) {
@@ -71,6 +73,37 @@ const getFeaturedTestsById = async (req, res, next) => {
       { comments: comments },
       { new: true }
     );
+    let averageUser = 0;
+    const user = await User.findById(userId);
+    const testMinutes = parseInt(checkComments.time.split(':')[0]);
+    const testSeconds = parseInt(checkComments.time.split(':')[1]);
+    const testTime = testMinutes * 60 + testSeconds;
+    for (const recordId of user.records) {
+      const record = await Record.findById(recordId);
+      if (record != null) {
+        if (record.test == id) {
+          const userRecordPoints = parseInt(record.score.split('/')[0]);
+          const userRecordTime =
+            parseInt(record.score.split('/')[2].split(':')[0]) * 60 +
+            parseInt(record.score.split(':')[1]);
+          const minutesDifRecord = Math.floor(
+            parseInt(testTime - userRecordTime) / 60
+          );
+          const secondsDifRecord =
+            parseInt(testTime - userRecordTime) - minutesDifRecord * 60;
+          averageUser = parseFloat(
+            `${userRecordPoints}.${minutesDifRecord}${secondsDifRecord}`
+          );
+        }
+      }
+    }
+    const percentageUser =
+      (checkComments.average.slice(
+        0,
+        checkComments.average.indexOf(averageUser)
+      ).length /
+        (checkComments.average.length - 1)) *
+      100;
     const featuredTest = await FeaturedTest.findById(id).populate([
       'creator',
       {
@@ -90,7 +123,9 @@ const getFeaturedTestsById = async (req, res, next) => {
         populate: { path: 'user' },
       },
     ]);
-    return res.status(200).json(featuredTest);
+    return res
+      .status(200)
+      .json({ test: featuredTest, average: percentageUser });
   } catch (error) {
     return next(error);
   }
