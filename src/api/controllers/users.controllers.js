@@ -239,6 +239,7 @@ const updateUser = async (req, res, next) => {
     const { id } = req.params;
     if (req.files) {
       const user = await User.findById(id);
+      req.body.admin = user.admin 
       if (user != null) {
         if (req.files.avatar) {
           deleteImgCloudinary(user.avatar);
