@@ -1,5 +1,6 @@
 const express = require('express');
 const { upload } = require('../../middlewares/files.middleware');
+const auth = require('../../middlewares/auth.middleware');
 const FeaturedTestsRoutes = express.Router();
 
 const {
@@ -11,25 +12,25 @@ const {
   updateFavoritesFTest,
 } = require('../controllers/featuredTests.controllers');
 
-FeaturedTestsRoutes.get('/', getAllFeaturedTests);
-FeaturedTestsRoutes.get('/:id', getFeaturedTestsById);
+FeaturedTestsRoutes.get('/', [auth], getAllFeaturedTests);
+FeaturedTestsRoutes.get('/:id', [auth], getFeaturedTestsById);
 FeaturedTestsRoutes.post(
-  '/',
+  '/', [auth],
   upload.fields([
     { name: 'thumbnail', maxCount: 1 },
     { name: 'banner', maxCount: 1 },
   ]),
   createFeaturedTest
 );
-FeaturedTestsRoutes.delete('/:id', deleteFeaturedTest);
+FeaturedTestsRoutes.delete('/:id', [auth], deleteFeaturedTest);
 FeaturedTestsRoutes.put(
-  '/id/:id',
+  '/id/:id',[auth],
   upload.fields([
     { name: 'thumbnail', maxCount: 1 },
     { name: 'banner', maxCount: 1 },
   ]),
   updateFeatureTest
 );
-FeaturedTestsRoutes.put('/favoritesftest', updateFavoritesFTest);
+FeaturedTestsRoutes.put('/favoritesftest', [auth], updateFavoritesFTest);
 
 module.exports = FeaturedTestsRoutes;

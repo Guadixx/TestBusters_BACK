@@ -1,6 +1,6 @@
 const User = require("../api/models/user.model");
 const { verifyToken } = require("../utils/token");
-const setError = require("../utils/errors");
+const setError = require("../utils/error");
 const dotenv = require("dotenv");
 dotenv.config();
 
