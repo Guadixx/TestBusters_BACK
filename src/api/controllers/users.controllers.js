@@ -6,9 +6,12 @@ const Record = require('../models/record.model');
 const Leaderboard = require('../models/leaderboard.model');
 const Data = require('../models/data.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt');
 const { createToken } = require('../../utils/token');
 const setError = require('../../utils/error');
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const getAllUsers = async (req, res, next) => {
   try {
@@ -17,9 +20,9 @@ const getAllUsers = async (req, res, next) => {
       ? { $regex: req.query.username, $options: 'i' }
       : { $regex: '', $options: 'i' };
     let page =
-      req.query.page && !isNaN(parseInt(req.query.page))
-        ? parseInt(req.query.page)
-        : 1,
+        req.query.page && !isNaN(parseInt(req.query.page))
+          ? parseInt(req.query.page)
+          : 1,
       limit =
         req.query.limit && !isNaN(parseInt(req.query.limit))
           ? parseInt(req.query.limit)
@@ -132,6 +135,31 @@ const getUserById = async (req, res, next) => {
 };
 const registerUser = async (req, res, next) => {
   try {
+    const email = process.env.EMAIL;
+    const password = process.env.PASSWORD;
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: email,
+        pass: password,
+      },
+    });
+    const confirmationCode = Math.floor(
+      Math.random() * (999999 - 100000) + 100000
+    );
+    const mailOptions = {
+      from: email,
+      to: req.body.email,
+      subject: 'Confirmation code TestBusters',
+      text: `tu codigo es ${confirmationCode}`,
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
     const newUser = new User({
       ...req.body,
       avatar: req.files.avatar
@@ -143,7 +171,9 @@ const registerUser = async (req, res, next) => {
     });
     const createdUser = await newUser.save();
     createdUser.password = null;
-    return res.status(201).json(createdUser);
+    return res
+      .status(201)
+      .json({ user: createdUser, confirmation: confirmationCode });
   } catch (error) {
     return next(error);
   }
@@ -218,14 +248,14 @@ const deleteUser = async (req, res, next) => {
     if (
       deletedUser.avatar &&
       deletedUser.avatar !=
-      'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/user-dummy-p4ao7p3l9bvrme1wyabiin2vr079ietul8qza7zw2w_dl4uos.png'
+        'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/user-dummy-p4ao7p3l9bvrme1wyabiin2vr079ietul8qza7zw2w_dl4uos.png'
     ) {
       deleteImgCloudinary(deletedUser.avatar);
     }
     if (
       deletedUser.banner &&
       deletedUser.banner !=
-      'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png'
+        'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png'
     ) {
       deleteImgCloudinary(deletedUser.banner);
     }
@@ -239,7 +269,7 @@ const updateUser = async (req, res, next) => {
     const { id } = req.params;
     if (req.files) {
       const user = await User.findById(id);
-      req.body.admin = user.admin 
+      req.body.admin = user.admin;
       if (user != null) {
         if (req.files.avatar) {
           deleteImgCloudinary(user.avatar);
@@ -280,26 +310,26 @@ const handleFollow = async (req, res, next) => {
     const followingUser = await User.findById(followingUserId);
     followedUser.followed_users.includes(followingUserId)
       ? await User.findByIdAndUpdate(
-        followedUserId,
-        { $pull: { followed_users: followingUserId } },
-        { new: true }
-      )
+          followedUserId,
+          { $pull: { followed_users: followingUserId } },
+          { new: true }
+        )
       : await User.findByIdAndUpdate(
-        followedUserId,
-        { $push: { followed_users: followingUserId } },
-        { new: true }
-      );
-      followedUser.followed_users.includes(followingUserId)
+          followedUserId,
+          { $push: { followed_users: followingUserId } },
+          { new: true }
+        );
+    followedUser.followed_users.includes(followingUserId)
       ? await User.findByIdAndUpdate(
-        followingUserId,
-        { $pull: { following_users: followedUserId } },
-        { new: true }
-      )
+          followingUserId,
+          { $pull: { following_users: followedUserId } },
+          { new: true }
+        )
       : await User.findByIdAndUpdate(
-        followingUserId,
-        { $push: { following_users: followedUserId } },
-        { new: true }
-      );
+          followingUserId,
+          { $push: { following_users: followedUserId } },
+          { new: true }
+        );
     return res.status(200).json('follow');
   } catch (error) {
     next(error);
@@ -309,7 +339,7 @@ const loginUser = async (req, res, next) => {
   try {
     const userInDB = await User.findOne({ username: req.body.username });
     if (!userInDB) {
-      return res.status(418).json("User not found");
+      return res.status(418).json('User not found');
     }
     if (bcrypt.compareSync(req.body.password, userInDB.password)) {
       const token = createToken(userInDB._id, userInDB.username);
@@ -318,11 +348,11 @@ const loginUser = async (req, res, next) => {
         userInDB,
         token,
       });
-    }else {
-      return res.status(418).json("wrong password");
+    } else {
+      return res.status(418).json('wrong password');
     }
   } catch (error) {
-    return next(setError(500, error.message || "Failed authenticating User"));
+    return next(setError(500, error.message || 'Failed authenticating User'));
   }
 };
 

@@ -60,6 +60,7 @@ const getAllGenericTests = async (req, res, next) => {
 const getGenericTestsById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const {userId} = req.body
     const checkComments = await GenericTest.findById(id);
     const comments = [];
     for (const commentId of checkComments.comments) {
