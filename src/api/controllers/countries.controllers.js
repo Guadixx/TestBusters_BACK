@@ -2,10 +2,13 @@ const Country = require('../models/country.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllCountries = async (req, res, next) => {
-  const status = req.query.status ? req.query.status : { "$regex": "", "$options": "i" }
-  const continent = req.query.continent ? req.query.continent : { "$regex": "", "$options": "i" }
+  const status = req.query.status ? req.query.status : '';
+  const continent = req.query.continent ? req.query.continent : '';
   try {
-    const country = await Country.find({status: status, continent: continent});
+    const country = await Country.find({
+      status: { $regex: status, $options: 'i' },
+      continent: { $regex: continent, $options: 'i' },
+    });
     return res.status(200).json(country);
   } catch (error) {
     return next(error);
