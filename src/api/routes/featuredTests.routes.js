@@ -13,7 +13,7 @@ const {
 } = require('../controllers/featuredTests.controllers');
 
 FeaturedTestsRoutes.get('/', [auth], getAllFeaturedTests);
-FeaturedTestsRoutes.get('/:id', [auth], getFeaturedTestsById);
+FeaturedTestsRoutes.patch('/:id', [auth], getFeaturedTestsById);
 FeaturedTestsRoutes.post(
   '/', [auth],
   upload.fields([

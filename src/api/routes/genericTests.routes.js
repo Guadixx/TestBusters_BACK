@@ -13,7 +13,7 @@ const {
 } = require('../controllers/genericTests.controllers');
 
 GenericTestsRoutes.get('/', [auth], getAllGenericTests);
-GenericTestsRoutes.get('/:id', [auth], getGenericTestsById);
+GenericTestsRoutes.patch('/:id', [auth], getGenericTestsById);
 GenericTestsRoutes.post(
   '/', [auth],
   upload.fields([
