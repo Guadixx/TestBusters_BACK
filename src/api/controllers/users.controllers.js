@@ -147,6 +147,17 @@ const registerUser = async (req, res, next) => {
     const confirmationCode = Math.floor(
       Math.random() * (999999 - 100000) + 100000
     );
+    const newUser = new User({
+      ...req.body,
+      avatar: req.files.avatar
+        ? req.files.avatar[0].path
+        : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/user-dummy-p4ao7p3l9bvrme1wyabiin2vr079ietul8qza7zw2w_dl4uos.png', //req.files es un objeto con clave el campo y valor array con los files
+      banner: req.files.banner
+        ? req.files.banner[0].path
+        : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png',
+    });
+    const createdUser = await newUser.save();
+    createdUser.password = null;
     const mailOptions = {
       from: email,
       to: req.body.email,
@@ -160,17 +171,6 @@ const registerUser = async (req, res, next) => {
         console.log('Email sent: ' + info.response);
       }
     });
-    const newUser = new User({
-      ...req.body,
-      avatar: req.files.avatar
-        ? req.files.avatar[0].path
-        : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/user-dummy-p4ao7p3l9bvrme1wyabiin2vr079ietul8qza7zw2w_dl4uos.png', //req.files es un objeto con clave el campo y valor array con los files
-      banner: req.files.banner
-        ? req.files.banner[0].path
-        : 'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png',
-    });
-    const createdUser = await newUser.save();
-    createdUser.password = null;
     return res
       .status(201)
       .json({ user: createdUser, confirmation: confirmationCode });
