@@ -1,5 +1,5 @@
 const Data = require('../models/data.model');
-const GenericTest = require('../models/genericTest.model')
+const GenericTest = require('../models/genericTest.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllData = async (req, res, next) => {
@@ -21,17 +21,17 @@ const getDataById = async (req, res, next) => {
 };
 const createData = async (req, res, next) => {
   try {
-    const dataNumber = await Data.countDocuments();
     let indexText = 0;
     let indexImage = 0;
-    const {testId} = req.body
+    const { testId } = req.body;
     for (const type of req.body.type) {
       if (type == 'image') {
         const newData = new Data({
-          id: dataNumber + indexImage + indexText,
+          id: indexImage + indexText,
           question: req.body.question[indexImage + indexText],
           type: type,
-          question_img: req.files.question_img[indexText + indexImage].path,
+          question_img:
+            'https://res.cloudinary.com/dva9zee9r/image/upload/v1679340393/achievements%20icons/testbuster_icon_brsbfz.png',
           answer: req.files.answer[indexImage].path,
           option_1: req.files.option_1
             ? req.files.option_1[indexImage].path
@@ -55,13 +55,13 @@ const createData = async (req, res, next) => {
           testId,
           { $push: { data: newData._id } },
           { new: true }
-        )
+        );
       } else {
         const newData = new Data({
-          id: dataNumber + indexImage + indexText,
+          id: indexImage + indexText,
           question: req.body.question[indexImage + indexText],
           type: type,
-          question_img: req.files.question_img[indexText + indexImage].path,
+          question_img: req.files.question_img[indexText].path,
           answer:
             typeof req.body.answer == 'string'
               ? req.body.answer
@@ -103,7 +103,7 @@ const createData = async (req, res, next) => {
           testId,
           { $push: { data: newData._id } },
           { new: true }
-        )
+        );
       }
     }
     return res.status(200).json('data created');
