@@ -74,6 +74,7 @@ const getFeaturedTestsById = async (req, res, next) => {
       { new: true }
     );
     let averageUser = 0;
+    let userRecord = null;
     const user = await User.findById(userId);
     const testMinutes = parseInt(checkComments.time.split(':')[0]);
     const testSeconds = parseInt(checkComments.time.split(':')[1]);
@@ -82,6 +83,7 @@ const getFeaturedTestsById = async (req, res, next) => {
       const record = await Record.findById(recordId);
       if (record != null) {
         if (record.test == id) {
+          userRecord = record;
           const userRecordPoints = parseInt(record.score.split('/')[0]);
           const userRecordTime =
             parseInt(record.score.split('/')[2].split(':')[0]) * 60 +
@@ -125,7 +127,11 @@ const getFeaturedTestsById = async (req, res, next) => {
     ]);
     return res
       .status(200)
-      .json({ test: featuredTest, average: percentageUser });
+      .json({
+        test: featuredTest,
+        average: percentageUser,
+        record: userRecord,
+      });
   } catch (error) {
     return next(error);
   }

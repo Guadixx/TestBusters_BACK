@@ -24,8 +24,8 @@ const createComment = async (req, res, next) => {
     const comment = req.body.comment;
     const testId = req.body.testId;
     const model = req.body.model;
-    const commentsNumber = await Comment.countDocuments();
-    req.body.comment.id = commentsNumber + 1;
+    const comments = await Comment.find().sort({ id: 1 });
+    req.body.comment.id = comments[comments.length - 1].id + 1;
     const newComment = await new Comment(comment);
     model == 'GenericTest'
       ? await GenericTest.findByIdAndUpdate(
@@ -90,7 +90,7 @@ const handleReactions = async (req, res, next) => {
       { [reaction]: reactionList },
       { new: true }
     );
-    return res.status(200).json(updatedComment)
+    return res.status(200).json(updatedComment);
   } catch (error) {
     next(error);
   }

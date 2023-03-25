@@ -70,6 +70,7 @@ const getGenericTestsById = async (req, res, next) => {
       }
     }
     let averageUser = 0;
+    let userRecord = null;
     const user = await User.findById(userId);
     const testMinutes = parseInt(checkComments.time.split(':')[0]);
     const testSeconds = parseInt(checkComments.time.split(':')[1]);
@@ -78,6 +79,7 @@ const getGenericTestsById = async (req, res, next) => {
       const record = await Record.findById(recordId);
       if (record != null) {
         if (record.test == id) {
+          userRecord = record;
           const userRecordPoints = parseInt(record.score.split('/')[0]);
           const userRecordTime =
             parseInt(record.score.split('/')[2].split(':')[0]) * 60 +
@@ -125,7 +127,7 @@ const getGenericTestsById = async (req, res, next) => {
         populate: { path: 'user' },
       },
     ]);
-    return res.status(200).json({ test: genericTest, average: percentageUser });
+    return res.status(200).json({ test: genericTest, average: percentage, record: userRecord, });
   } catch (error) {
     return next(error);
   }
