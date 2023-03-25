@@ -60,7 +60,7 @@ const getAllGenericTests = async (req, res, next) => {
 const getGenericTestsById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const {userId} = req.body
+    const { userId } = req.body;
     const checkComments = await GenericTest.findById(id);
     const comments = [];
     for (const commentId of checkComments.comments) {
@@ -127,7 +127,9 @@ const getGenericTestsById = async (req, res, next) => {
         populate: { path: 'user' },
       },
     ]);
-    return res.status(200).json({ test: genericTest, average: percentage, record: userRecord, });
+    return res
+      .status(200)
+      .json({ test: genericTest, average: percentageUser, record: userRecord });
   } catch (error) {
     return next(error);
   }
@@ -277,17 +279,29 @@ const updateFavoritesGTest = async (req, res, next) => {
     const { testId } = req.body;
     const { userId } = req.body;
     const genericTest = await GenericTest.findById(testId);
-    genericTest.favorites.includes(userId)
-      ? await GenericTest.findByIdAndUpdate(
-          testId,
-          { $pull: { favorites: userId } },
-          { new: true }
-        )
-      : await GenericTest.findByIdAndUpdate(
-          testId,
-          { $push: { favorites: userId } },
-          { new: true }
-        );
+    if (genericTest.favorites.includes(userId)) {
+      await GenericTest.findByIdAndUpdate(
+        testId,
+        { $pull: { favorites: userId } },
+        { new: true }
+      );
+      await User.findByIdAndUpdate(
+        userId,
+        { $pull: { favourite_genericTests: testId } },
+        { new: true }
+      );
+    } else {
+      await GenericTest.findByIdAndUpdate(
+        testId,
+        { $push: { favorites: userId } },
+        { new: true }
+      );
+      await User.findByIdAndUpdate(
+        userId,
+        { $push: { favourite_genericTests: testId } },
+        { new: true }
+      );
+    }
     return res.status(200).json('favs updated');
   } catch (error) {
     next(error);

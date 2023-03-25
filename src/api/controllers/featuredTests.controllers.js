@@ -125,13 +125,11 @@ const getFeaturedTestsById = async (req, res, next) => {
         populate: { path: 'user' },
       },
     ]);
-    return res
-      .status(200)
-      .json({
-        test: featuredTest,
-        average: percentageUser,
-        record: userRecord,
-      });
+    return res.status(200).json({
+      test: featuredTest,
+      average: percentageUser,
+      record: userRecord,
+    });
   } catch (error) {
     return next(error);
   }
@@ -257,17 +255,29 @@ const updateFavoritesFTest = async (req, res, next) => {
     const { testId } = req.body;
     const { userId } = req.body;
     const featuredTest = await FeaturedTest.findById(testId);
-    featuredTest.favorites.includes(userId)
-      ? await FeaturedTest.findByIdAndUpdate(
-          testId,
-          { $pull: { favorites: userId } },
-          { new: true }
-        )
-      : await FeaturedTest.findByIdAndUpdate(
-          testId,
-          { $push: { favorites: userId } },
-          { new: true }
-        );
+    if (featuredTest.favorites.includes(userId)) {
+      await FeaturedTest.findByIdAndUpdate(
+        testId,
+        { $pull: { favorites: userId } },
+        { new: true }
+      );
+      await User.findByIdAndUpdate(
+        userId,
+        { $pull: { favourite_featuredTests: testId } },
+        { new: true }
+      );
+    } else {
+      await FeaturedTest.findByIdAndUpdate(
+        testId,
+        { $push: { favorites: userId } },
+        { new: true }
+      );
+      await User.findByIdAndUpdate(
+        userId,
+        { $push: { favourite_featuredTests: testId } },
+        { new: true }
+      );
+    }
     return res.status(200).json('favs updated');
   } catch (error) {
     next(error);
