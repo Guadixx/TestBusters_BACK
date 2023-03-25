@@ -24,8 +24,13 @@ const createComment = async (req, res, next) => {
     const comment = req.body.comment;
     const testId = req.body.testId;
     const model = req.body.model;
-    const comments = await Comment.find().sort({ id: 1 });
-    req.body.comment.id = comments[comments.length - 1].id + 1;
+    const numComments = await Comment.countDocuments();
+    if (numComments != 0) {
+      const comments = await Comment.find().sort({ id: 1 });
+      req.body.comment.id = comments[comments.length - 1].id + 1;
+    } else {
+      req.body.comment.id = 1;
+    }
     const newComment = await new Comment(comment);
     model == 'GenericTest'
       ? await GenericTest.findByIdAndUpdate(
