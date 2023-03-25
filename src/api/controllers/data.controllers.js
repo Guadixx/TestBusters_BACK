@@ -21,6 +21,8 @@ const getDataById = async (req, res, next) => {
 };
 const createData = async (req, res, next) => {
   try {
+    console.log(req.body);
+    console.log(req.files);
     let indexText = 0;
     let indexImage = 0;
     const { testId } = req.body;
@@ -33,19 +35,19 @@ const createData = async (req, res, next) => {
           question_img:
             'https://res.cloudinary.com/dva9zee9r/image/upload/v1679340393/achievements%20icons/testbuster_icon_brsbfz.png',
           answer: req.files.answer[indexImage].path,
-          option_1: req.files.option_1
+          option_1: req.files.option_1 && req.files.option_1[indexImage]!=undefined
             ? req.files.option_1[indexImage].path
             : '',
-          option_2: req.files.option_2
+          option_2: req.files.option_2 && req.files.option_2[indexImage]!=undefined
             ? req.files.option_2[indexImage].path
             : '',
-          option_3: req.files.option_3
+          option_3: req.files.option_3 && req.files.option_3[indexImage]!=undefined
             ? req.files.option_3[indexImage].path
             : '',
-          option_4: req.files.option_4
+          option_4: req.files.option_4 && req.files.option_4[indexImage]!=undefined
             ? req.files.option_4[indexImage].path
             : '',
-          option_5: req.files.option_5
+          option_5: req.files.option_5 && req.files.option_5[indexImage]!=undefined
             ? req.files.option_5[indexImage].path
             : '',
         });
