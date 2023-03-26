@@ -307,8 +307,8 @@ const handleFollow = async (req, res, next) => {
     const { followedUserId } = req.body;
     const { followingUserId } = req.body;
     const followedUser = await User.findById(followedUserId);
-    const followingUser = await User.findById(followingUserId);
-    followedUser.followed_users.includes(followingUserId)
+    //const followingUser = await User.findById(followingUserId);
+    const followed = followedUser.followed_users.includes(followingUserId)
       ? await User.findByIdAndUpdate(
           followedUserId,
           { $pull: { followed_users: followingUserId } },
@@ -319,7 +319,7 @@ const handleFollow = async (req, res, next) => {
           { $push: { followed_users: followingUserId } },
           { new: true }
         );
-    followedUser.followed_users.includes(followingUserId)
+    const following = followedUser.followed_users.includes(followingUserId)
       ? await User.findByIdAndUpdate(
           followingUserId,
           { $pull: { following_users: followedUserId } },
@@ -330,7 +330,7 @@ const handleFollow = async (req, res, next) => {
           { $push: { following_users: followedUserId } },
           { new: true }
         );
-    return res.status(200).json('follow');
+    return res.status(200).json({ followed: followed, following: following });
   } catch (error) {
     next(error);
   }
