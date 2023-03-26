@@ -10,6 +10,7 @@ const getInfo = async (req, res, next) => {
       data: countries,
       filter_data_1: 'area',
       filter_data_2: 'population',
+      possible: ['name','official_name','flag','capital','area','population']
     };
     return res.status(200).json({ countries: countriesInfo });
   } catch (error) {
