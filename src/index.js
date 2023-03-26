@@ -12,8 +12,8 @@ const GenericTestsRoutes = require('./api/routes/genericTests.routes');
 const LeaderboardsRoutes = require('./api/routes/leaderboards.routes');
 const RecordsRoutes = require('./api/routes/records.routes');
 const UsersRoutes = require('./api/routes/users.routes');
-const UltimateRoute = require('./api/routes/ultimate.route')
-
+const UltimateRoute = require('./api/routes/ultimate.route');
+const InfoRoutes = require('./api/routes/info.routes');
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -39,6 +39,7 @@ server.use('/api/v1/leaderboards', LeaderboardsRoutes);
 server.use('/api/v1/records', RecordsRoutes);
 server.use('/api/v1/users', UsersRoutes);
 server.use('/api/v1/ultimate', UltimateRoute);
+server.use('/api/v1/info', InfoRoutes);
 server.use('*', (req, res, next) => {
   const error = new Error('Route not found');
   error.status = 404;
