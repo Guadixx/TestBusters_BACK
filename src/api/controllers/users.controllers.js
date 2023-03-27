@@ -355,7 +355,81 @@ const loginUser = async (req, res, next) => {
     return next(setError(500, error.message || 'Failed authenticating User'));
   }
 };
-
+const forgotPassword = async (req, res, next) => {
+  try {
+    const userInDB = await User.findOne({ email: req.body.email });
+    if (!userInDB) {
+      return res
+        .status(418)
+        .json('There is no user registered with this email');
+    } else {
+      const email = process.env.EMAIL;
+      const password = process.env.PASSWORD;
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: email,
+          pass: password,
+        },
+      });
+      const symbols = '@*!&$=';
+      const securePassword = `${Math.random().toString(36).slice(-4)}${
+        symbols[Math.floor(Math.random() * 5)]
+      }${symbols[Math.floor(Math.random() * 5)]}${Math.random()
+        .toString(36)
+        .slice(-4)
+        .toUpperCase()}${symbols[Math.floor(Math.random() * 5)]}${
+        symbols[Math.floor(Math.random() * 5)]
+      }`;
+      const mailOptions = {
+        from: email,
+        to: req.body.email,
+        subject: 'New password TestBusters',
+        text: `your new password is ${securePassword}`,
+      };
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+      const newPasswordHashed = bcrypt.hashSync(securePassword, 10);
+      await User.findOneAndUpdate(
+        { email: req.body.email },
+        { password: newPasswordHashed },
+        { new: true }
+      );
+      return res.status(200).json('email sent');
+    }
+  } catch (error) {
+    return next(
+      setError(500, error.message || 'Failed recovering password User')
+    );
+  }
+};
+const changePassword = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const userInDB = await User.findById(id);
+    if (!userInDB) {
+      return res.status(418).json('User not found');
+    }
+    if (bcrypt.compareSync(req.body.password, userInDB.password)) {
+      const newPasswordHashed = bcrypt.hashSync(req.body.newPassword, 10);
+      await User.findByIdAndUpdate(
+        id,
+        { password: newPasswordHashed },
+        { new: true }
+      );
+      return res.status(200).json('password changed');
+    } else {
+      return res.status(418).json('wrong password');
+    }
+  } catch (error) {
+    return next(setError(500, error.message || 'Failed authenticating User'));
+  }
+};
 module.exports = {
   getAllUsers,
   registerUser,
@@ -364,6 +438,8 @@ module.exports = {
   updateUser,
   handleFollow,
   loginUser,
+  forgotPassword,
+  changePassword,
 };
 /* const checkUser = async (hash, password) => {
   return await bcrypt.compare(password, hash);
