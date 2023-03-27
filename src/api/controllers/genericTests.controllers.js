@@ -102,7 +102,7 @@ const getGenericTestsById = async (req, res, next) => {
         checkComments.average.indexOf(averageUser)
       ).length /
         checkComments.average.length) *
-      100).toFixed(2);
+      100).toFixed(1);
     await GenericTest.findByIdAndUpdate(
       id,
       { comments: comments },

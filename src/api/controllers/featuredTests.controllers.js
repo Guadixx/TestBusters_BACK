@@ -106,7 +106,7 @@ const getFeaturedTestsById = async (req, res, next) => {
         checkComments.average.indexOf(averageUser)
       ).length /
         (checkComments.average.length - 1)) *
-      100).toFixed(2);
+      100).toFixed(1);
     const featuredTest = await FeaturedTest.findById(id).populate([
       'creator',
       {

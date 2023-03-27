@@ -113,7 +113,7 @@ const getUserById = async (req, res, next) => {
         }
       }
     }
-    const average = (sumRecords / checkFollows.records.length).toFixed(2);
+    const average = (sumRecords / checkFollows.records.length).toFixed(1);
     const user = await User.findById(id).populate([
       'favourite_featuredTests',
       'created_featuredTests',
@@ -416,7 +416,7 @@ const changePassword = async (req, res, next) => {
       return res.status(418).json('User not found');
     }
     if (bcrypt.compareSync(req.body.password, userInDB.password)) {
-      const newPasswordHashed = bcrypt.hashSync(req.body.newPassword, 10);
+      const newPasswordHashed = bcrypt.hashSync(req.body.newpassword, 10);
       await User.findByIdAndUpdate(
         id,
         { password: newPasswordHashed },
