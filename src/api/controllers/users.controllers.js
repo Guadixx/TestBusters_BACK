@@ -113,7 +113,7 @@ const getUserById = async (req, res, next) => {
         }
       }
     }
-    const average = sumRecords / checkFollows.records.length;
+    const average = (sumRecords / checkFollows.records.length).toFixed(2);
     const user = await User.findById(id).populate([
       'favourite_featuredTests',
       'created_featuredTests',
