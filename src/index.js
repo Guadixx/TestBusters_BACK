@@ -14,7 +14,7 @@ const RecordsRoutes = require('./api/routes/records.routes');
 const UsersRoutes = require('./api/routes/users.routes');
 const UltimateRoute = require('./api/routes/ultimate.route');
 const InfoRoutes = require('./api/routes/info.routes');
-
+const DayTestsRoutes = require('./api/routes/dayTests.routes');
 dotenv.config();
 const PORT = process.env.PORT;
 configCloudinary();
@@ -40,6 +40,7 @@ server.use('/api/v1/records', RecordsRoutes);
 server.use('/api/v1/users', UsersRoutes);
 server.use('/api/v1/ultimate', UltimateRoute);
 server.use('/api/v1/info', InfoRoutes);
+server.use('/api/v1/daytests', DayTestsRoutes);
 server.use('*', (req, res, next) => {
   const error = new Error('Route not found');
   error.status = 404;
