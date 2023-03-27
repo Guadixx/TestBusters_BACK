@@ -95,12 +95,13 @@ const getGenericTestsById = async (req, res, next) => {
         }
       }
     }
+    checkComments.average.sort((a, b) => a - b);
     const percentageUser =
       (checkComments.average.slice(
         0,
         checkComments.average.indexOf(averageUser)
       ).length /
-        (checkComments.average.length - 1)) *
+        checkComments.average.length) *
       100;
     await GenericTest.findByIdAndUpdate(
       id,

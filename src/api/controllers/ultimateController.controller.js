@@ -71,13 +71,15 @@ const ultimateController = async (req, res, next) => {
     if (userRecord != -1) {
       //en el caso de que ya se haya jugado
       //MEJOR QUE EL X% DE LAST
-      average.push(averageUser); //introducimos temporalmente la última puntuación
+      average.push(averageUser);
+      average.splice(average.indexOf(userRecord), 1); //introducimos temporalmente la última puntuación
       average.sort((a, b) => a - b); //ordenamos de menor a mayor
       betterThanLast =
-        (average.slice(0, average.indexOf(averageUser)).length /
-          (average.length - 1)) *
+        (average.slice(0, average.indexOf(averageUser) + 1).length /
+          average.length) *
         100; //calculamos el tanto por ciento de puntuaciones menores
       average.splice(average.indexOf(averageUser), 1); //sacamos la puntuación que habiamos introducido
+      average.push(userRecord);
       //******************TEST.AVERAGE
       let isNewRecord = false; //seteamos newrecord a false
       if (averageUser > userRecord) {
@@ -94,7 +96,7 @@ const ultimateController = async (req, res, next) => {
       betterThanGlobal =
         isNewRecord == false
           ? (average.slice(0, average.indexOf(userRecord)).length /
-              (average.length - 1)) *
+              average.length) *
             100
           : betterThanLast; //una vez redefinido el array de puntuaciones calculamos el % de puntuaciones peores
       //********************TEST.RATING
