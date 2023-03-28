@@ -2,6 +2,7 @@ const FeaturedTest = require('../models/featuredTest.model');
 const Comment = require('../models/comment.model');
 const User = require('../models/user.model');
 const Record = require('../models/record.model');
+const Leaderboard = require('../models/leaderboard.model')
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllFeaturedTests = async (req, res, next) => {
