@@ -10,6 +10,7 @@ const {
   deleteGenericTest,
   updateGenericTest,
   updateFavoritesGTest,
+  getRandomGeneric,
 } = require('../controllers/genericTests.controllers');
 
 GenericTestsRoutes.get('/', [auth], getAllGenericTests);
@@ -32,5 +33,6 @@ GenericTestsRoutes.put(
   updateGenericTest
 );
 GenericTestsRoutes.put('/favoritesgtest', [auth], updateFavoritesGTest);
+GenericTestsRoutes.get('/random', getRandomGeneric);
 
 module.exports = GenericTestsRoutes;

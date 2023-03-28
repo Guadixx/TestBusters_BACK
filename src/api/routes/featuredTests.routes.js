@@ -10,12 +10,14 @@ const {
   deleteFeaturedTest,
   updateFeatureTest,
   updateFavoritesFTest,
+  getRandomFeatured,
 } = require('../controllers/featuredTests.controllers');
 
 FeaturedTestsRoutes.get('/', [auth], getAllFeaturedTests);
 FeaturedTestsRoutes.patch('/:id', [auth], getFeaturedTestsById);
 FeaturedTestsRoutes.post(
-  '/', [auth],
+  '/',
+  [auth],
   upload.fields([
     { name: 'thumbnail', maxCount: 1 },
     { name: 'banner', maxCount: 1 },
@@ -24,7 +26,8 @@ FeaturedTestsRoutes.post(
 );
 FeaturedTestsRoutes.delete('/:id', [auth], deleteFeaturedTest);
 FeaturedTestsRoutes.put(
-  '/id/:id',[auth],
+  '/id/:id',
+  [auth],
   upload.fields([
     { name: 'thumbnail', maxCount: 1 },
     { name: 'banner', maxCount: 1 },
@@ -32,5 +35,6 @@ FeaturedTestsRoutes.put(
   updateFeatureTest
 );
 FeaturedTestsRoutes.put('/favoritesftest', [auth], updateFavoritesFTest);
+FeaturedTestsRoutes.get('/random', getRandomFeatured);
 
 module.exports = FeaturedTestsRoutes;

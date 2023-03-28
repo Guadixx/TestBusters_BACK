@@ -285,7 +285,18 @@ const updateFavoritesFTest = async (req, res, next) => {
     next(error);
   }
 };
-
+const getRandomFeatured = async (req, res, next) => {
+  try {
+    const numTests = await FeaturedTest.countDocuments();
+    const random = Math.floor(Math.random() * numTests);
+    const randomTest = await FeaturedTest.findOne()
+      .skip(random)
+      .populate('creator');
+    return res.status(200).json(randomTest);
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   getAllFeaturedTests,
   createFeaturedTest,
@@ -293,4 +304,5 @@ module.exports = {
   deleteFeaturedTest,
   updateFeatureTest,
   updateFavoritesFTest,
+  getRandomFeatured,
 };

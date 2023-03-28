@@ -96,13 +96,14 @@ const getGenericTestsById = async (req, res, next) => {
       }
     }
     checkComments.average.sort((a, b) => a - b);
-    const percentageUser =
-      ((checkComments.average.slice(
+    const percentageUser = (
+      (checkComments.average.slice(
         0,
         checkComments.average.indexOf(averageUser)
       ).length /
         checkComments.average.length) *
-      100).toFixed(1);
+      100
+    ).toFixed(1);
     await GenericTest.findByIdAndUpdate(
       id,
       { comments: comments },
@@ -308,7 +309,18 @@ const updateFavoritesGTest = async (req, res, next) => {
     next(error);
   }
 };
-
+const getRandomGeneric = async (req, res, next) => {
+  try {
+    const numTests = await GenericTest.countDocuments();
+    const random = Math.floor(Math.random() * numTests);
+    const randomTest = await GenericTest.findOne()
+      .skip(random)
+      .populate('creator');
+    return res.status(200).json(randomTest);
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   getAllGenericTests,
   createGenericTest,
@@ -316,4 +328,5 @@ module.exports = {
   deleteGenericTest,
   updateGenericTest,
   updateFavoritesGTest,
+  getRandomGeneric,
 };
