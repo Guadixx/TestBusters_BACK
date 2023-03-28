@@ -4,6 +4,7 @@ const DayTestSchema = mongoose.Schema(
   {
     test: { type: mongoose.Schema.Types.ObjectId, refPath: 'model_type' },
     date: { type: String, trim: true },
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     model_type: {
       type: String,
       enum: ['FeaturedTest', 'GenericTest'],

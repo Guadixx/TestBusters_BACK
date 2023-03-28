@@ -2,7 +2,7 @@ const DayTest = require('../models/dayTest.model');
 
 const getAllDayTests = async (req, res, next) => {
   try {
-    const dayTests = await DayTest.find().populate('test');
+    const dayTests = await DayTest.find().populate(['test','creator']);
     return res.status(200).json(dayTests);
   } catch (error) {
     return next(error);
@@ -11,7 +11,7 @@ const getAllDayTests = async (req, res, next) => {
 const getDayTestByDate = async (req, res, next) => {
   try {
     const { date } = req.params;
-    const dayTests = await DayTest.findOne({ date: date }).populate('test');
+    const dayTests = await DayTest.findOne({ date: date }).populate(['test','creator']);
     return res.status(200).json(dayTests);
   } catch (error) {
     return next(error);
