@@ -7,7 +7,7 @@ dotenv.config();
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'testbuster',
+    folder: 'testbusterimgdata',
     allowedFormats: ['jpg', 'png', 'jepg', 'gif', 'webp'],
   },
 });
