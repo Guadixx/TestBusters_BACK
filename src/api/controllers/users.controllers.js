@@ -74,6 +74,7 @@ const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const checkFollows = await User.findById(id);
+    checkFollows.password = null;
     for (const userId of checkFollows.followed_users) {
       const userToCheck = await User.findById(userId);
       if (userToCheck == null) {
