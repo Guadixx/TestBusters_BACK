@@ -13,8 +13,8 @@ const {
   getRandomGeneric,
 } = require('../controllers/genericTests.controllers');
 
-GenericTestsRoutes.get('/', [auth], getAllGenericTests);
-GenericTestsRoutes.patch('/:id', [auth], getGenericTestsById);
+GenericTestsRoutes.get('/', getAllGenericTests);
+GenericTestsRoutes.patch('/:id', getGenericTestsById);
 GenericTestsRoutes.post(
   '/', [auth],
   upload.fields([

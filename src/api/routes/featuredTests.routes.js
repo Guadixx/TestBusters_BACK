@@ -13,8 +13,8 @@ const {
   getRandomFeatured,
 } = require('../controllers/featuredTests.controllers');
 
-FeaturedTestsRoutes.get('/', [auth], getAllFeaturedTests);
-FeaturedTestsRoutes.patch('/:id', [auth], getFeaturedTestsById);
+FeaturedTestsRoutes.get('/', getAllFeaturedTests);
+FeaturedTestsRoutes.patch('/:id', getFeaturedTestsById);
 FeaturedTestsRoutes.post(
   '/',
   [auth],

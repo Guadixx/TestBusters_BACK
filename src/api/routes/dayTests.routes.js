@@ -10,8 +10,8 @@ const {
   updateDayTest,
 } = require('../controllers/dayTests.controllers');
 
-DayTestsRoutes.get('/', [auth], getAllDayTests);
-DayTestsRoutes.get('/:date', [auth], getDayTestByDate);
+DayTestsRoutes.get('/', getAllDayTests);
+DayTestsRoutes.get('/:date', getDayTestByDate);
 DayTestsRoutes.post('/', [auth], createDayTest);
 DayTestsRoutes.delete('/:id', [auth], deleteDayTest);
 DayTestsRoutes.put('/:id', [auth], updateDayTest);
