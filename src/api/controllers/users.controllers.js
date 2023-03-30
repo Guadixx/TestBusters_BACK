@@ -183,85 +183,90 @@ const registerUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedUser = await User.findByIdAndDelete(id);
-    const created_featuredTests = deletedUser.created_featuredTests;
-    const created_genericTests = deletedUser.created_genericTests;
-    const records = deletedUser.records;
-    const deletedUserComments = await Comment.find({ user: deletedUser._id });
-    for (const comment of deletedUserComments) {
-      await Comment.findByIdAndDelete(comment._id);
+    const user = await User.findById(id);
+    if (bcrypt.compareSync(req.body.password, user.password)) {
+      const deletedUser = await User.findByIdAndDelete(id);
+      const created_featuredTests = deletedUser.created_featuredTests;
+      const created_genericTests = deletedUser.created_genericTests;
+      const records = deletedUser.records;
+      const deletedUserComments = await Comment.find({ user: deletedUser._id });
+      for (const comment of deletedUserComments) {
+        await Comment.findByIdAndDelete(comment._id);
+      }
+      for (const created of created_featuredTests) {
+        const test = await FeaturedTest.findById(created);
+        await FeaturedTest.findByIdAndDelete(created);
+        for (const commentId of test.comments) {
+          await Comment.findByIdAndDelete(commentId);
+        }
+        if (test.first.length != 0) {
+          await Leaderboard.findByIdAndDelete(test.first[0]);
+        }
+        if (test.first.length != 0) {
+          await Leaderboard.findByIdAndDelete(test.second[0]);
+        }
+        if (test.first.length != 0) {
+          await Leaderboard.findByIdAndDelete(test.third[0]);
+        }
+      }
+      for (const created of created_genericTests) {
+        const test = await GenericTest.findById(created);
+        if (test.first.length != 0) {
+          await Leaderboard.findByIdAndDelete(test.first[0]);
+        }
+        if (test.first.length != 0) {
+          await Leaderboard.findByIdAndDelete(test.second[0]);
+        }
+        if (test.first.length != 0) {
+          await Leaderboard.findByIdAndDelete(test.third[0]);
+        }
+        await GenericTest.findByIdAndDelete(created);
+        for (const dataId of test.data) {
+          const deletedData = await Data.findByIdAndDelete(dataId);
+          if (deletedData.question_img) {
+            deleteImgCloudinary(deletedData.question_img);
+          }
+          if (deletedData.answer) {
+            deleteImgCloudinary(deletedData.answer);
+          }
+          if (deletedData.option_1) {
+            deleteImgCloudinary(deletedData.option_1);
+          }
+          if (deletedData.option_2) {
+            deleteImgCloudinary(deletedData.option_2);
+          }
+          if (deletedData.option_3) {
+            deleteImgCloudinary(deletedData.option_3);
+          }
+          if (deletedData.option_4) {
+            deleteImgCloudinary(deletedData.option_4);
+          }
+          if (deletedData.option_5) {
+            deleteImgCloudinary(deletedData.option_5);
+          }
+        }
+      }
+      for (const record of records) {
+        await Record.findByIdAndDelete(record);
+      }
+      if (
+        deletedUser.avatar &&
+        deletedUser.avatar !=
+          'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/user-dummy-p4ao7p3l9bvrme1wyabiin2vr079ietul8qza7zw2w_dl4uos.png'
+      ) {
+        deleteImgCloudinary(deletedUser.avatar);
+      }
+      if (
+        deletedUser.banner &&
+        deletedUser.banner !=
+          'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png'
+      ) {
+        deleteImgCloudinary(deletedUser.banner);
+      }
+      return res.status(200).json(deletedUser);
+    } else {
+      return res.status(201).json('wrong password');
     }
-    for (const created of created_featuredTests) {
-      const test = await FeaturedTest.findById(created);
-      await FeaturedTest.findByIdAndDelete(created);
-      for (const commentId of test.comments) {
-        await Comment.findByIdAndDelete(commentId);
-      }
-      if (test.first.length != 0) {
-        await Leaderboard.findByIdAndDelete(test.first[0]);
-      }
-      if (test.first.length != 0) {
-        await Leaderboard.findByIdAndDelete(test.second[0]);
-      }
-      if (test.first.length != 0) {
-        await Leaderboard.findByIdAndDelete(test.third[0]);
-      }
-    }
-    for (const created of created_genericTests) {
-      const test = await GenericTest.findById(created);
-      if (test.first.length != 0) {
-        await Leaderboard.findByIdAndDelete(test.first[0]);
-      }
-      if (test.first.length != 0) {
-        await Leaderboard.findByIdAndDelete(test.second[0]);
-      }
-      if (test.first.length != 0) {
-        await Leaderboard.findByIdAndDelete(test.third[0]);
-      }
-      await GenericTest.findByIdAndDelete(created);
-      for (const dataId of test.data) {
-        const deletedData = await Data.findByIdAndDelete(dataId);
-        if (deletedData.question_img) {
-          deleteImgCloudinary(deletedData.question_img);
-        }
-        if (deletedData.answer) {
-          deleteImgCloudinary(deletedData.answer);
-        }
-        if (deletedData.option_1) {
-          deleteImgCloudinary(deletedData.option_1);
-        }
-        if (deletedData.option_2) {
-          deleteImgCloudinary(deletedData.option_2);
-        }
-        if (deletedData.option_3) {
-          deleteImgCloudinary(deletedData.option_3);
-        }
-        if (deletedData.option_4) {
-          deleteImgCloudinary(deletedData.option_4);
-        }
-        if (deletedData.option_5) {
-          deleteImgCloudinary(deletedData.option_5);
-        }
-      }
-    }
-    for (const record of records) {
-      await Record.findByIdAndDelete(record);
-    }
-    if (
-      deletedUser.avatar &&
-      deletedUser.avatar !=
-        'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/user-dummy-p4ao7p3l9bvrme1wyabiin2vr079ietul8qza7zw2w_dl4uos.png'
-    ) {
-      deleteImgCloudinary(deletedUser.avatar);
-    }
-    if (
-      deletedUser.banner &&
-      deletedUser.banner !=
-        'https://res.cloudinary.com/dva9zee9r/image/upload/v1679067709/Hero-Banner-Placeholder-Light-2500x1172-1_mpth2v.png'
-    ) {
-      deleteImgCloudinary(deletedUser.banner);
-    }
-    return res.status(200).json(deletedUser);
   } catch (error) {
     return next(error);
   }
@@ -387,7 +392,7 @@ const forgotPassword = async (req, res, next) => {
         from: email,
         to: req.body.email,
         subject: 'New password TestBusters',
-        text: `your new password is ${securePassword}`,
+        text: `User: ${userInDB.username}. Your new password is ${securePassword}`,
       };
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
