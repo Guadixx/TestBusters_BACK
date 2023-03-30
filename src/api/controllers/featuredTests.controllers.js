@@ -2,7 +2,7 @@ const FeaturedTest = require('../models/featuredTest.model');
 const Comment = require('../models/comment.model');
 const User = require('../models/user.model');
 const Record = require('../models/record.model');
-const Leaderboard = require('../models/leaderboard.model')
+const Leaderboard = require('../models/leaderboard.model');
 const { deleteImgCloudinary } = require('../../middlewares/files.middleware');
 
 const getAllFeaturedTests = async (req, res, next) => {
@@ -112,25 +112,26 @@ const getFeaturedTestsById = async (req, res, next) => {
             100
           ).toFixed(1)
         : 100;
-    const featuredTest = await FeaturedTest.findById(id).populate([
-      'creator',
-      {
-        path: 'first',
-        populate: { path: 'user' },
-      },
-      {
-        path: 'second',
-        populate: { path: 'user' },
-      },
-      {
-        path: 'third',
-        populate: { path: 'user' },
-      },
-      {
-        path: 'comments',
-        populate: { path: 'user' },
-      },
-    ]);
+    const featuredTest = await FeaturedTest.findById(id)
+      .populate([
+        'creator',
+        {
+          path: 'first',
+          populate: { path: 'user' },
+        },
+        {
+          path: 'second',
+          populate: { path: 'user' },
+        },
+        {
+          path: 'third',
+          populate: { path: 'user' },
+        },
+        {
+          path: 'comments',
+          populate: { path: 'user' },
+        },
+      ])
     return res.status(200).json({
       test: featuredTest,
       average: percentageUser,

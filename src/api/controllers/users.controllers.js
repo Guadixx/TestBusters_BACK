@@ -129,6 +129,7 @@ const getUserById = async (req, res, next) => {
       'following_users',
       'achievements',
     ]);
+    user.password = null;
     return res.status(200).json({ average: average, user: user });
   } catch (error) {
     return next(error);
